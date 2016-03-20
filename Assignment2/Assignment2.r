@@ -1,6 +1,6 @@
 #Input Data
 home<-setwd(Sys.getenv("HOME"))
-fpath<-file.path(home,"../git/DataMining/Assignment1","imports-85.data")
+fpath<-file.path(home,"../git/DataMining/Assignment2","haberman.data")
 automobile <- read.csv(fpath, header = FALSE, stringsAsFactors = TRUE, col.names = c("symboling", "normalizedlosses", "make", "fueltype", "aspiration", "num-of-doors", "body-style", "drive-wheels", "engine-location", "wheel-base", "length", "width", "height", "weight", "engine-type", "num-of-cylinders", "engine-size", "fuel-system", "bore", "stroke", "compression-ratio", "horsepower", "peak-rpm", "city-mpg", "highway-mpg", "price"), na.strings = "?")
 #automobile <- read.csv(file = "C:/Users/Kevin Kuo/git/DataMining/Assignment1/imports-85.data", header = FALSE, stringsAsFactors = TRUE, col.names = c("symboling", "normalized-losses", "make", "fuel-type", "aspiration", "num-of-doors", "body-style", "drive-wheels", "engine-location", "wheel-base", "length", "width", "height", "curb-weight", "engine-type", "num-of-cylinders", "engine-size", "fuel-system", "bore", "stroke", "compression-ratio", "horsepower", "peak-rpm", "city-mpg", "highway-mpg", "price"))
 
