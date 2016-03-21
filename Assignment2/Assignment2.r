@@ -32,7 +32,7 @@ ind <- sample(2, nrow(habermansurvival), replace=TRUE, prob=c(0.7,0.3))
 trainData <- habermansurvival[ind==1,]
 testData <- habermansurvival[ind==2,]
 
-habermansurvival_rpart <- rpart(survival_status ~ age + operation_year + positive_axillary_nodes, data = trainData)
+habermansurvival_rpart <- rpart(survival_status ~ age + operation_year + positive_axillary_nodes, data = trainData, method = "class")
 
 printcp(habermansurvival_rpart)
 plotcp(habermansurvival_rpart)
@@ -40,3 +40,15 @@ plot(habermansurvival_rpart)
 text(habermansurvival_rpart, use.n=TRUE)
 
 habermansurvival_pred <- predict(habermansurvival_rpart, newdata = testData)
+
+
+#Random Forest
+fit<-randomForest(survival_status ~ age + operation_year + positive_axillary_nodes, data = trainData)
+print(fit)
+importance(fit)
+
+
+# Naïve Bayes Classification
+classifier <- naiveBayes(survival_status ~ age + operation_year + positive_axillary_nodes, data = trainData)
+pred <- predict(classifier,testData[,-5])
+table(pred,testData$survival_status)
