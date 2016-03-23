@@ -49,6 +49,6 @@ importance(fit)
 
 
 # Naïve Bayes Classification
-classifier <- naiveBayes(survival_status ~ age + operation_year + positive_axillary_nodes, data = trainData)
-pred <- predict(classifier,testData[,-5])
+classifier <- naiveBayes(survival_status ~ age + operation_year + positive_axillary_nodes, data = trainData, method = "class")
+pred <- predict(classifier,testData[,-4])
 table(pred,testData$survival_status)
