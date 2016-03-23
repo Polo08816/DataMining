@@ -29,6 +29,8 @@ sum.positive_axillary_nodes
 set.seed(1234)
 ind <- sample(2, nrow(habermansurvival), replace=TRUE, prob=c(0.7,0.3))
 
+habermansurvival['survival_status'] <- as.factor(habermansurvival[, 'survival_status'])
+
 trainData <- habermansurvival[ind==1,]
 testData <- habermansurvival[ind==2,]
 
@@ -43,12 +45,15 @@ habermansurvival_pred <- predict(habermansurvival_rpart, newdata = testData)
 
 
 #Random Forest
-fit<-randomForest(survival_status ~ age + operation_year + positive_axillary_nodes, data = trainData)
+fit<-randomForest(survival_status ~ age + operation_year + positive_axillary_nodes, data = trainData, method = "class")
 print(fit)
 importance(fit)
 
 
 # Naïve Bayes Classification
+
 classifier <- naiveBayes(survival_status ~ age + operation_year + positive_axillary_nodes, data = trainData, method = "class")
-pred <- predict(classifier,testData[,-4])
+print(classifier)
+pred <- predict(classifier, testData)
+pred
 table(pred,testData$survival_status)
