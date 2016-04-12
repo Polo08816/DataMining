@@ -23,7 +23,9 @@ l <- c(1,8)
 m <- c(2,6)
 n <- c(2,8)
 o <- c(1,9)
+
 m = rbind(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o)
+
 #plot the toy dataset
 plot(m)
 #run k-means with k = 2

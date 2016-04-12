@@ -20,7 +20,7 @@ sum.operation_year <- summary(habermansurvival$operation_year)
 sum.operation_year
 
 
-# Summarize age
+# Summarize axillary nodes
 sum.positive_axillary_nodes <- summary(habermansurvival$positive_axillary_nodes)
 sum.positive_axillary_nodes
 
