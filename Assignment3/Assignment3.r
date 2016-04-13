@@ -1,8 +1,12 @@
 #Input Data
 home<-setwd(Sys.getenv("HOME"))
 fpath<-file.path(home,"../git/DataMining/Assignment3","haberman.data")
-habermansurvival <- read.csv(fpath, header = FALSE, sep = ",", stringsAsFactors = TRUE, col.names = c("age", "operation_year", "positive_axillary_nodes", "survival_status"), na.strings = "?")
+habermansurvivalraw <- read.csv(fpath, header = FALSE, sep = ",", stringsAsFactors = TRUE, col.names = c("age", "operation_year", "positive_axillary_nodes", "survival_status"), na.strings = "?")
 # habermansurvival[1:30,]
+
+# remove NA values
+habermansurvival = na.omit(habermansurvivalraw)
+
 m = cbind(habermansurvival$operation_year, habermansurvival$positive_axillary_nodes)
 
 
