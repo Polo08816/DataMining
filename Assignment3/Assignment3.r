@@ -7,7 +7,7 @@ habermansurvivalraw <- read.csv(fpath, header = FALSE, sep = ",", stringsAsFacto
 # remove NA values
 habermansurvival = na.omit(habermansurvivalraw)
 
-m = cbind(habermansurvival$operation_year, habermansurvival$positive_axillary_nodes)
+m = cbind(habermansurvival$age, habermansurvival$operation_year)
 
 
 #load libraries
@@ -40,13 +40,13 @@ sum.positive_axillary_nodes
 ###############################################################################
 
 #plot the toy dataset
-plot(m)
+plot(m, main = "Results Unclustered", xlab = "Age", ylab = "Operation Year")
 #run k-means with k = 2
 km2 <- kmeans(m, centers = 2) 
 km2
 
 #visualize results colored by cluster
-plot(m, col=km2$cluster)
+plot(m, col=km2$cluster, main = "Results Colored By 2 Clusters", xlab = "Age", ylab = "Operation Year")
 
 #plot cluster centers
 points(km2$centers,pch='x',cex=1.5)
@@ -56,7 +56,7 @@ km3 <- kmeans(m, centers = 3)
 km3
 
 #visualize results colored by cluster
-plot(m, col=km3$cluster)
+plot(m, col=km3$cluster, main = "Results Colored By 3 Clusters", xlab = "Age", ylab = "Operation Year")
 
 #plot cluster centers
 points(km3$centers,pch='x',cex=1.5)
@@ -85,7 +85,7 @@ distm <- dist(m)
 pam2 <- pam(m, 2)
 
 #visualize results colored by cluster
-plot(m, col=pam2$cluster)
+plot(m, col=pam2$cluster, main = "Results Colored By 2 Cluster Centers", xlab = "Age", ylab = "Operation Year")
 
 #plot cluster centers
 points(pam2$medoids,pch='O',cex=1.5)
@@ -94,7 +94,7 @@ points(pam2$medoids,pch='O',cex=1.5)
 pam3 <- pam(m, 3)
 
 #visualize results colored by cluster
-plot(m, col=pam3$cluster)
+plot(m, col=pam3$cluster, main = "Results Colored By 3 Cluster Centers", xlab = "Age", ylab = "Operation Year")
 
 #plot cluster centers
 points(pam3$medoids,pch='O',cex=1.5)
@@ -125,7 +125,7 @@ plot(dend_agn, xlab="Index of Data Points", ylab = "Steps", main = "Complete-Lin
 
 
 
-plot(m)
+plot(m, main = "Results Unclustered", xlab = "Age", ylab = "Operation Year")
 #Run dbscan with eps = 5 and MinPts = 5
 dbr <- dbscan(m, eps=5, MinPts=5)
 str(dbr)
@@ -134,12 +134,12 @@ plot(m, col=dbr$cluster+1L)
 #Run dbscan with eps = 7 and MinPts = 5
 dbr <- dbscan(m, eps=7, MinPts=5)
 str(dbr)
-plot(m, col=dbr$cluster+1L)
+plot(m, col=dbr$cluster+1L, main = "Results EPS = 7", xlab = "Age", ylab = "Operation Year")
 
 #Run dbscan with eps = 10 and MinPts = 5
 dbr <- dbscan(m, eps=10, MinPts=5)
 str(dbr)
-plot(m, col=dbr$cluster+1L)
+plot(m, col=dbr$cluster+1L, main = "Results EPS = 10", xlab = "Age", ylab = "Operation Year")
 
 #Run dbscan with eps = 20 and MinPts = 5 
 dbr <- dbscan(m, eps=20, MinPts=5)
