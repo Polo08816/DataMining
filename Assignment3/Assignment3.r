@@ -123,33 +123,17 @@ dend_agn <- as.dendrogram(agn)
 plot(dend_agn, xlab="Index of Data Points", ylab = "Steps", main = "Complete-Linkage Clustering")
 
 
-
-
 plot(m, main = "Results Unclustered", xlab = "Age", ylab = "Operation Year")
+
 #Run dbscan with eps = 5 and MinPts = 5
-dbr <- dbscan(m, eps=5, MinPts=5)
+dbr <- dbscan(m, eps=1, MinPts=5)
 str(dbr)
-plot(m, col=dbr$cluster+1L)
+plot(m, col=dbr$cluster+1L, main = "Results of EPS 1 and MinPts 5", xlab = "Age", ylab = "Operation Year")
 
-#Run dbscan with eps = 7 and MinPts = 5
-dbr <- dbscan(m, eps=7, MinPts=5)
+#Run dbscan with eps = 1.4 and MinPts = 5
+dbr <- dbscan(m, eps=1.4, MinPts=4)
 str(dbr)
-plot(m, col=dbr$cluster+1L, main = "Results EPS = 7", xlab = "Age", ylab = "Operation Year")
-
-#Run dbscan with eps = 10 and MinPts = 5
-dbr <- dbscan(m, eps=10, MinPts=5)
-str(dbr)
-plot(m, col=dbr$cluster+1L, main = "Results EPS = 10", xlab = "Age", ylab = "Operation Year")
-
-#Run dbscan with eps = 20 and MinPts = 5 
-dbr <- dbscan(m, eps=20, MinPts=5)
-str(dbr)
-plot(m, col=dbr$cluster+1L)
-
-#Run dbscan with eps = 50 and MinPts = 5 
-dbr <- dbscan(m, eps=50, MinPts=5)
-str(dbr)
-plot(m, col=dbr$cluster+1L)
+plot(m, col=dbr$cluster+1L, main = "Results of EPS 1.4 and MinPts 4", xlab = "Age", ylab = "Operation Year")
 
 # Silhouette plot
 d <- dist(m)
