@@ -104,12 +104,14 @@ votingBuckets[1:20,]
 summary(votingBuckets)
 
 itemFrequencyPlot(votingBuckets, support = 0.1, cex.names = 0.8)
+itemFrequencyPlot(votingBuckets, support = 0.3, cex.names = 0.8)
+itemFrequencyPlot(votingBuckets, support = 0.5, cex.names = 0.8)
 
 # Apriori
 rules <- apriori(votingBuckets, parameter = list(support = 0.01, confidence = 0.8))
 
 # General (without regard to party)
-inspect(sort(rules, by = "confidence")[1:5])
+inspect(sort(rules, by = "confidence")[1:3])
 
 # Democrat Voting Records
 rulesDemA <- subset(rules, subset = rhs %in% "V1=democrat")
