@@ -1,7 +1,7 @@
 #### Input data set plants scale into Data Frame "plantsData"
 #crimeData <- read.csv(file = "C:/Users/Kevin Kuo/git/DataMining/GroupProject/UCI/communities.data",
-crimeData <- read.csv(file = "C:/Users/J14688/git/DataMining/GroupProject/UCI/communities.data",
-# crimeData <- read.csv(file = "C:/Users/maryjoyce/git/COSC757/GroupProject/UCI/communities.data",
+#crimeData <- read.csv(file = "C:/Users/J14688/git/DataMining/GroupProject/UCI/communities.data",
+crimeData <- read.csv(file = "C:/Users/maryjoyce/git/COSC757/GroupProject/UCI/communities.data",
                       header = FALSE, sep = ",", stringsAsFactors = TRUE,
                       col.names = c("state_numeric", "county_numeric", "community_numeric", "community_name_string", "fold_numeric",
                                     "population_numeric", "household_size_numeric", "race_percent_black_numeric", "race_percent_white_numeric",
@@ -49,13 +49,176 @@ crimeData <- read.csv(file = "C:/Users/J14688/git/DataMining/GroupProject/UCI/co
 #install.packages("rpart")
 #library(rpart)
 
-# 5/10 bins (number is off for some reason)
+binningFunct <- function(mNum, dataOrig, dataNew){
+  n.bins <- mNum*5
+  n.size<-length(dataOrig)
+  #  print(whichbin)
+  
+  binwidth<-1/n.bins
+  print(binwidth)
+  for (i in 1:n.bins){
+    for(j in 1:n.size){
+      if((i-1)*binwidth < dataOrig[j] && dataOrig[j] <= (i)*binwidth)
+        dataNew[j] <- i
+      if((i == 1) && (dataOrig[j] == 0)) {
+        dataNew[j] <- i
+      }
+    }
+  }
+  print(dataNew)
+  hist(dataNew,
+       breaks = mNum*5,
+       xlim = c(1,mNum*5),
+       col = "lightblue",
+       ylab = "Count",
+       xlab = "Bin",
+       main = "Histogram of A vs B")
+  return(dataNew)
+}
+
+# Assumed to matter
+pairs(~crimeData$ViolentCrimesPerPop_numeric+
+        crimeData$PolicPerPop_numeric+
+        crimeData$per_capita_income_numeric+
+        crimeData$percent_bachelors_or_more_numeric)
+
+# Determined to matter
+pairs(~crimeData$ViolentCrimesPerPop_numeric+
+        crimeData$race_percent_white_numeric+
+        crimeData$percent_with_investment_income_numeric+
+        crimeData$percent_not_high_school_grad_numeric+
+        crimeData$total_percent_divorced_numeric)
+
+# 5/10 bins (number is off for some reason) for ViolentCrimesPerPop
+whichbinViolentCrimes <- crimeData
+for(m in 1:2) {
+  whichbinViolentCrimes$ViolentCrimesPerPop_numeric <- binningFunct(m, crimeData$ViolentCrimesPerPop_numeric, whichbinViolentCrimes$ViolentCrimesPerPop_numeric)
+
+  set.seed(1234)
+  ind <- sample(2, n.size, replace=TRUE,
+                prob=c(0.7,0.3))
+  trainData <- whichbin[ind==1, ]
+  testData <- whichbin[ind==2,]
+  
+  crimeData_rpart <- rpart(ViolentCrimesPerPop_numeric ~ race_percent_white_numeric + percent_with_investment_income_numeric + percent_not_high_school_grad_numeric + total_percent_divorced_numeric, data = trainData, method = "class")
+  printcp(crimeData_rpart)
+  plotcp(crimeData_rpart)
+  plot(crimeData_rpart)
+  text(crimeData_rpart, use.n=TRUE)
+  crimeData_pred <- predict(crimeData_rpart, testData[,-6], type="class")
+  print(crimeData_pred)
+  print(table(crimeData_pred, testData$ViolentCrimesPerPop_numeric))
+}
+
+
+# Bin for frequent itemsets
+numBins <- 1
+
+newBin <- crimeData
+newBin$ViolentCrimesPerPop_numeric <- binningFunct(numBins, crimeData$ViolentCrimesPerPop_numeric, newBin$ViolentCrimesPerPop_numeric)
+newBin$race_percent_white_numeric <- binningFunct(numBins, crimeData$race_percent_white_numeric, newBin$race_percent_white_numeric)
+newBin$percent_with_investment_income_numeric <- binningFunct(numBins, crimeData$percent_with_investment_income_numeric, newBin$percent_with_investment_income_numeric)
+newBin$percent_not_high_school_grad_numeric <- binningFunct(numBins, crimeData$percent_not_high_school_grad_numeric, newBin$percent_not_high_school_grad_numeric)
+newBin$total_percent_divorced_numeric <- binningFunct(numBins, crimeData$total_percent_divorced_numeric, newBin$total_percent_divorced_numeric)
+
+
+# Frequent itemsets pre-processing
+newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="1"]<-"1V"
+newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="2"]<-"2V"
+newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="3"]<-"3V"
+newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="4"]<-"4V"
+newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="5"]<-"5V"
+newBin$ViolentCrimesPerPop_numeric <- as.factor(newBin$ViolentCrimesPerPop_numeric)
+newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="1"]<-"1A"
+newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="2"]<-"2A"
+newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="3"]<-"3A"
+newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="4"]<-"4A"
+newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="5"]<-"5A"
+newBin$race_percent_white_numeric <- as.factor(newBin$race_percent_white_numeric)
+newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="1"]<-"1B"
+newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="2"]<-"2B"
+newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="3"]<-"3B"
+newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="4"]<-"4B"
+newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="5"]<-"5B"
+newBin$percent_with_investment_income_numeric <- as.factor(newBin$percent_with_investment_income_numeric)
+newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="1"]<-"1C"
+newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="2"]<-"2C"
+newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="3"]<-"3C"
+newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="4"]<-"4C"
+newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="5"]<-"5C"
+newBin$percent_not_high_school_grad_numeric <- as.factor(newBin$percent_not_high_school_grad_numeric)
+newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="1"]<-"1D"
+newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="2"]<-"2D"
+newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="3"]<-"3D"
+newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="4"]<-"4D"
+newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="5"]<-"5D"
+newBin$total_percent_divorced_numeric <- as.factor(newBin$total_percent_divorced_numeric)
+newBin[1:20,]
+
+keeps <- c("ViolentCrimesPerPop_numeric","race_percent_white_numeric","percent_with_investment_income_numeric","percent_not_high_school_grad_numeric","total_percent_divorced_numeric")
+keepNewBin = newBin[keeps]
+keepNewBin[1:20,]
+
+library("arules", lib.loc="~/R/win-library/3.2")
+library(datasets)
+
+# Inspect the dataset
+votingBaskets <- as(keepNewBin,"transactions")
+summary(votingBaskets)
+votingBaskets[1:2,]
+# plot the data
+itemFrequencyPlot(votingBaskets, support=0.1, cex.names=0.8)
+itemFrequencyPlot(votingBaskets, support=0.01, cex.names=0.8)
+
+
+## Apriori Algorithm
+# association rules
+rules <- apriori(votingBaskets, parameter = list(support=0.01, confidence=0.6, minlen=2))
+# subset of rules
+rulesV3 <- subset(rules, subset=rhs%in%"ViolentCrimesPerPop_numeric=3V")
+rulesV4 <- subset(rules, subset=rhs%in%"ViolentCrimesPerPop_numeric=4V")
+rulesV5 <- subset(rules, subset=rhs%in%"ViolentCrimesPerPop_numeric=5V")
+inspect(sort(rulesV3, by="confidence")[1:5])
+inspect(sort(rulesV4, by="confidence")[1:5])
+inspect(sort(rulesV5, by="confidence")[1:5])
+
+
+## Eclat Algorithm
+itemsets <- eclat(votingBaskets, parameter = list(sup=0.01, minlen=3, maxlen=15))
+fsets <- eclat(votingBaskets, parameter=list(sup=0.01, minlen=3))
+fsets.top5 <- sort(fsets)[1:5]
+inspect(fsets.top5)
+fsets.top10 <- sort(fsets)[1:10]
+inspect(fsets.top10)
+rulesV3E <- subset(itemsets, subset=items%in%"ViolentCrimesPerPop_numeric=3V")
+rulesV4E <- subset(itemsets, subset=items%in%"ViolentCrimesPerPop_numeric=4V")
+rulesV5E <- subset(itemsets, subset=items%in%"ViolentCrimesPerPop_numeric=5V")
+inspect(sort(rulesV3E, by="support")[1:5])
+inspect(sort(rulesV4E, by="support")[1:5])
+inspect(sort(rulesV5E, by="support")[1:5])
+
+rules2 <- apriori(votingBaskets, parameter = list(support=0.01, confidence=0.6, minlen=3, maxlen=15))
+rules2V3 <- subset(rules2, subset=rhs%in%"ViolentCrimesPerPop_numeric=3V")
+rules2V4 <- subset(rules2, subset=rhs%in%"ViolentCrimesPerPop_numeric=4V")
+rules2V5 <- subset(rules2, subset=rhs%in%"ViolentCrimesPerPop_numeric=5V")
+inspect(sort(rules2V3, by="support")[1:5])
+inspect(sort(rules2V4, by="support")[1:5])
+inspect(sort(rules2V5, by="support")[1:5])
+
+
+
+
+
+
+
+##Extra Data
+# 5/10 bins (number is off for some reason) for ViolentCrimesPerPop
 for(m in 1:2){
   n.bins <- m*10
   n.size<-length(crimeData$ViolentCrimesPerPop_numeric)
   whichbin <- crimeData
-#  print(whichbin)
-
+  #  print(whichbin)
+  
   r.violentCrimes<-max(crimeData$ViolentCrimesPerPop_numeric) - min(crimeData$ViolentCrimesPerPop_numeric) + 1
   binwidth<-r.violentCrimes/n.bins
   print(binwidth)
@@ -63,9 +226,9 @@ for(m in 1:2){
     for(j in 1:n.size){
       if((i-1)*binwidth < crimeData$ViolentCrimesPerPop_numeric[j] && crimeData$ViolentCrimesPerPop_numeric[j] <= (i)*binwidth)
         whichbin$ViolentCrimesPerPop_numeric[j] <- i
-    if((i == 1) && (crimeData$ViolentCrimesPerPop_numeric[j] == 0)) {
-      whichbin$ViolentCrimesPerPop_numeric[j] <- i
-    }
+      if((i == 1) && (crimeData$ViolentCrimesPerPop_numeric[j] == 0)) {
+        whichbin$ViolentCrimesPerPop_numeric[j] <- i
+      }
     }
   }
   print(whichbin$ViolentCrimesPerPop_numeric)
@@ -83,7 +246,7 @@ for(m in 1:2){
   trainData <- whichbin[ind==1, ]
   testData <- whichbin[ind==2,]
   
-  crimeData_rpart <- rpart(ViolentCrimesPerPop_numeric ~ race_percent_black_numeric + race_percent_white_numeric, data = trainData, method = "class")
+  crimeData_rpart <- rpart(ViolentCrimesPerPop_numeric ~ race_percent_white_numeric + percent_with_investment_income_numeric + percent_not_high_school_grad_numeric + total_percent_divorced_numeric, data = trainData, method = "class")
   printcp(crimeData_rpart)
   plotcp(crimeData_rpart)
   plot(crimeData_rpart)
@@ -92,7 +255,6 @@ for(m in 1:2){
   print(crimeData_pred)
   print(table(crimeData_pred, testData$ViolentCrimesPerPop_numeric))
 }
-
 
 
 
@@ -144,6 +306,8 @@ pairs(~crimeData$ViolentCrimesPerPop_numeric+
         crimeData$percent_not_high_school_grad_numeric)
 pairs(~crimeData$ViolentCrimesPerPop_numeric+
         crimeData$percent_unemployed_numeric)
+pairs(~crimeData$ViolentCrimesPerPop_numeric+
+        crimeData$percent_bachelors_or_more_numeric)
 
 # Divorce
 pairs(~crimeData$ViolentCrimesPerPop_numeric+
@@ -364,115 +528,3 @@ plot(crimeData$percent_UsePubTrans_numeric,
 #crimeData[crimeData=="?"]<-"0"
 
 
-
-
-#for(i in 1:65){
-#  
-#}
-
-votingData$V1 <- as.factor(votingData$V1)
-votingData$V2[votingData$V2=="y"]<-"1y"
-votingData$V2[votingData$V2=="n"]<-"1n"
-votingData$V2[votingData$V2=="?"]<-"1?"
-votingData$V2 <- as.factor(votingData$V2)
-votingData$V3[votingData$V3=="y"]<-"2y"
-votingData$V3[votingData$V3=="n"]<-"2n"
-votingData$V3[votingData$V3=="?"]<-"2?"
-votingData$V3 <- as.factor(votingData$V3)
-votingData$V4[votingData$V4=="y"]<-"3y"
-votingData$V4[votingData$V4=="n"]<-"3n"
-votingData$V4[votingData$V4=="?"]<-"3?"
-votingData$V4 <- as.factor(votingData$V4)
-votingData$V5[votingData$V5=="y"]<-"4y"
-votingData$V5[votingData$V5=="n"]<-"4n"
-votingData$V5[votingData$V5=="?"]<-"4?"
-votingData$V5 <- as.factor(votingData$V5)
-votingData$V6[votingData$V6=="y"]<-"5y"
-votingData$V6[votingData$V6=="n"]<-"5n"
-votingData$V6[votingData$V6=="?"]<-"5?"
-votingData$V6 <- as.factor(votingData$V6)
-votingData$V7[votingData$V7=="y"]<-"6y"
-votingData$V7[votingData$V7=="n"]<-"6n"
-votingData$V7[votingData$V7=="?"]<-"6?"
-votingData$V7 <- as.factor(votingData$V7)
-votingData$V8[votingData$V8=="y"]<-"7y"
-votingData$V8[votingData$V8=="n"]<-"7n"
-votingData$V8[votingData$V8=="?"]<-"7?"
-votingData$V8 <- as.factor(votingData$V8)
-votingData$V9[votingData$V9=="y"]<-"8y"
-votingData$V9[votingData$V9=="n"]<-"8n"
-votingData$V9[votingData$V9=="?"]<-"8?"
-votingData$V9 <- as.factor(votingData$V9)
-votingData$V10[votingData$V10=="y"]<-"9y"
-votingData$V10[votingData$V10=="n"]<-"9n"
-votingData$V10[votingData$V10=="?"]<-"9?"
-votingData$V10 <- as.factor(votingData$V10)
-votingData$V11[votingData$V11=="y"]<-"10y"
-votingData$V11[votingData$V11=="n"]<-"10n"
-votingData$V11[votingData$V11=="?"]<-"10?"
-votingData$V11 <- as.factor(votingData$V11)
-votingData$V12[votingData$V12=="y"]<-"11y"
-votingData$V12[votingData$V12=="n"]<-"11n"
-votingData$V12[votingData$V12=="?"]<-"11?"
-votingData$V12 <- as.factor(votingData$V12)
-votingData$V13[votingData$V13=="y"]<-"12y"
-votingData$V13[votingData$V13=="n"]<-"12n"
-votingData$V13[votingData$V13=="?"]<-"12?"
-votingData$V13 <- as.factor(votingData$V13)
-votingData$V14[votingData$V14=="y"]<-"13y"
-votingData$V14[votingData$V14=="n"]<-"13n"
-votingData$V14[votingData$V14=="?"]<-"13?"
-votingData$V14 <- as.factor(votingData$V14)
-votingData$V15[votingData$V15=="y"]<-"14y"
-votingData$V15[votingData$V15=="n"]<-"14n"
-votingData$V15[votingData$V15=="?"]<-"14?"
-votingData$V15 <- as.factor(votingData$V15)
-votingData$V16[votingData$V16=="y"]<-"15y"
-votingData$V16[votingData$V16=="n"]<-"15n"
-votingData$V16[votingData$V16=="?"]<-"15?"
-votingData$V16 <- as.factor(votingData$V16)
-votingData$V17[votingData$V17=="y"]<-"16y"
-votingData$V17[votingData$V17=="n"]<-"16n"
-votingData$V17[votingData$V17=="?"]<-"16?"
-votingData$V17 <- as.factor(votingData$V17)
-votingData[1:20,]
-
-library("arules", lib.loc="~/R/win-library/3.2")
-library(datasets)
-#votingBaskets <- read.transactions(file = "C:/Users/maryjoyce/Documents/Towson/Spring 2016/COSC 757/Assignments/Assignment4/UCI data/house-votes-84.data.txt", format="basket", sep = ",")
-# Inspect the dataset
-votingBaskets <- as(crimeData,"transactions")
-summary(votingBaskets)
-votingBaskets[1:2,]
-# plot the data
-itemFrequencyPlot(votingBaskets, support=0.1, cex.names=0.8)
-itemFrequencyPlot(votingBaskets, support=0.01, cex.names=0.8)
-
-
-## Apriori Algorithm
-# association rules
-rules <- apriori(votingBaskets, parameter = list(support=0.01, confidence=0.6, minlen=2))
-# subset of rules
-rulesDemocrat <- subset(rules, subset=rhs%in%"V1=democrat")
-rulesRepublican <- subset(rules, subset=rhs%in%"V1=republican")
-inspect(sort(rulesDemocrat, by="confidence")[1:5])
-inspect(sort(rulesRepublican, by="confidence")[1:5])
-
-
-## Eclat Algorithm
-itemsets <- eclat(votingBaskets, parameter = list(sup=0.01, minlen=3, maxlen=15))
-fsets <- eclat(votingBaskets, parameter=list(sup=0.01, minlen=3))
-fsets.top5 <- sort(fsets)[1:5]
-inspect(fsets.top5)
-fsets.top10 <- sort(fsets)[1:10]
-inspect(fsets.top10)
-rulesDem <- subset(itemsets, subset=items%in%"V1=democrat")
-rulesRep <- subset(itemsets, subset=items%in%"V1=republican")
-inspect(sort(rulesDem, by="support")[1:5])
-inspect(sort(rulesRep, by="support")[1:5])
-
-rules2 <- apriori(votingBaskets, parameter = list(support=0.01, confidence=0.6, minlen=3, maxlen=15))
-rulesDemocrat2 <- subset(rules2, subset=rhs%in%"V1=democrat")
-rulesRepublican2 <- subset(rules2, subset=rhs%in%"V1=republican")
-inspect(sort(rulesDemocrat2, by="support")[1:5])
-inspect(sort(rulesRepublican2, by="support")[1:5])
