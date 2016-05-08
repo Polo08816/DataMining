@@ -1,5 +1,7 @@
 #### Input data set plants scale into Data Frame "plantsData"
-crimeData <- read.csv(file = "C:/Users/maryjoyce/git/COSC757/GroupProject/UCI/communities.data",
+#crimeData <- read.csv(file = "C:/Users/Kevin Kuo/git/DataMining/GroupProject/UCI/communities.data", 
+crimeData <- read.csv(file = "C:/Users/J14688/git/DataMining/GroupProject/UCI/communities.data", 
+#crimeData <- read.csv(file = "C:/Users/maryjoyce/git/COSC757/GroupProject/UCI/communities.data",
                       header = FALSE, sep = ",", stringsAsFactors = TRUE,
                       col.names = c("state_numeric", "county_numeric", "community_numeric", "community_name_string", "fold_numeric",
                                     "population_numeric", "household_size_numeric", "race_percent_black_numeric", "race_percent_white_numeric",
