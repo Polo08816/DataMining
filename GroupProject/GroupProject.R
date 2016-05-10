@@ -48,6 +48,15 @@ crimeData <- read.csv(file = "C:/Users/maryjoyce/git/COSC757/GroupProject/UCI/co
 
 #install.packages("rpart")
 #library(rpart)
+# install.packages("e1071")
+# library(class)
+# library(e1071)
+# install.packages("randomForest")
+# library(randomForest)
+# library("arules", lib.loc="~/R/win-library/3.2")
+# library(datasets)
+
+
 
 binningFunct <- function(mNum, dataOrig, dataNew){
   n.bins <- mNum*5
@@ -90,8 +99,8 @@ pairs(~crimeData$ViolentCrimesPerPop_numeric+
         crimeData$total_percent_divorced_numeric)
 
 # 5/10 bins (number is off for some reason) for ViolentCrimesPerPop
-whichbinViolentCrimes <- crimeData
 for(m in 1:2) {
+  whichbinViolentCrimes <- crimeData
   whichbinViolentCrimes$ViolentCrimesPerPop_numeric <- binningFunct(m, crimeData$ViolentCrimesPerPop_numeric, whichbinViolentCrimes$ViolentCrimesPerPop_numeric)
 
   set.seed(1234)
@@ -100,6 +109,7 @@ for(m in 1:2) {
   trainData <- whichbin[ind==1, ]
   testData <- whichbin[ind==2,]
   
+  # classification
   crimeData_rpart <- rpart(ViolentCrimesPerPop_numeric ~ race_percent_white_numeric + percent_with_investment_income_numeric + percent_not_high_school_grad_numeric + total_percent_divorced_numeric, data = trainData, method = "class")
   printcp(crimeData_rpart)
   plotcp(crimeData_rpart)
@@ -108,6 +118,21 @@ for(m in 1:2) {
   crimeData_pred <- predict(crimeData_rpart, testData[,-6], type="class")
   print(crimeData_pred)
   print(table(crimeData_pred, testData$ViolentCrimesPerPop_numeric))
+  
+  classifier <- naiveBayes(ViolentCrimesPerPop_numeric ~ race_percent_white_numeric + percent_with_investment_income_numeric + percent_not_high_school_grad_numeric + total_percent_divorced_numeric, data = trainData, method = "class")
+  print(classifier)
+  pred <- predict(classifier, testData[,-5])
+  print(table(pred))
+  print(table(testData$ViolentCrimesPerPop_numeric))
+  #print(table(pred,testData$ViolentCrimesPerPop_numeric))
+  length(pred)
+  length(testData$ViolentCrimesPerPop_numeric)
+  
+  # fit <- randomForest(class ~ balanceData, data = trainData)
+  fit <- randomForest(ViolentCrimesPerPop_numeric ~ race_percent_white_numeric + percent_with_investment_income_numeric + percent_not_high_school_grad_numeric + total_percent_divorced_numeric, data = trainData, method = "class")
+  print(fit)
+  print(importance(fit))
+
 }
 
 
@@ -159,9 +184,6 @@ keeps <- c("ViolentCrimesPerPop_numeric","race_percent_white_numeric","percent_w
 keepNewBin = newBin[keeps]
 keepNewBin[1:20,]
 
-library("arules", lib.loc="~/R/win-library/3.2")
-library(datasets)
-
 # Inspect the dataset
 votingBaskets <- as(keepNewBin,"transactions")
 summary(votingBaskets)
@@ -173,37 +195,29 @@ itemFrequencyPlot(votingBaskets, support=0.01, cex.names=0.8)
 
 ## Apriori Algorithm
 # association rules
-rules <- apriori(votingBaskets, parameter = list(support=0.01, confidence=0.6, minlen=2))
+rules <- apriori(votingBaskets, parameter = list(support=0.1, confidence=0.6, minlen=2))
 # subset of rules
-rulesV3 <- subset(rules, subset=rhs%in%"ViolentCrimesPerPop_numeric=3V")
-rulesV4 <- subset(rules, subset=rhs%in%"ViolentCrimesPerPop_numeric=4V")
-rulesV5 <- subset(rules, subset=rhs%in%"ViolentCrimesPerPop_numeric=5V")
-inspect(sort(rulesV3, by="confidence")[1:5])
-inspect(sort(rulesV4, by="confidence")[1:5])
-inspect(sort(rulesV5, by="confidence")[1:5])
+rulesV1 <- subset(rules, subset=rhs%in%"ViolentCrimesPerPop_numeric=1V")
+inspect(sort(rulesV1, by="confidence")[1:5])
+rulesV1L <- subset(rules, subset=lhs%in%"ViolentCrimesPerPop_numeric=1V")
+inspect(sort(rulesV1L, by="confidence")[1:5])
 
 
 ## Eclat Algorithm
-itemsets <- eclat(votingBaskets, parameter = list(sup=0.01, minlen=3, maxlen=15))
-fsets <- eclat(votingBaskets, parameter=list(sup=0.01, minlen=3))
+itemsets <- eclat(votingBaskets, parameter = list(sup=0.1, minlen=3, maxlen=15))
+fsets <- eclat(votingBaskets, parameter=list(sup=0.1, minlen=3))
 fsets.top5 <- sort(fsets)[1:5]
 inspect(fsets.top5)
 fsets.top10 <- sort(fsets)[1:10]
 inspect(fsets.top10)
-rulesV3E <- subset(itemsets, subset=items%in%"ViolentCrimesPerPop_numeric=3V")
-rulesV4E <- subset(itemsets, subset=items%in%"ViolentCrimesPerPop_numeric=4V")
-rulesV5E <- subset(itemsets, subset=items%in%"ViolentCrimesPerPop_numeric=5V")
-inspect(sort(rulesV3E, by="support")[1:5])
-inspect(sort(rulesV4E, by="support")[1:5])
-inspect(sort(rulesV5E, by="support")[1:5])
+rulesV1E <- subset(itemsets, subset=items%in%"ViolentCrimesPerPop_numeric=1V")
+inspect(sort(rulesV1E, by="support")[1:5])
 
-rules2 <- apriori(votingBaskets, parameter = list(support=0.01, confidence=0.6, minlen=3, maxlen=15))
-rules2V3 <- subset(rules2, subset=rhs%in%"ViolentCrimesPerPop_numeric=3V")
-rules2V4 <- subset(rules2, subset=rhs%in%"ViolentCrimesPerPop_numeric=4V")
-rules2V5 <- subset(rules2, subset=rhs%in%"ViolentCrimesPerPop_numeric=5V")
-inspect(sort(rules2V3, by="support")[1:5])
-inspect(sort(rules2V4, by="support")[1:5])
-inspect(sort(rules2V5, by="support")[1:5])
+rules2 <- apriori(votingBaskets, parameter = list(support=0.1, confidence=0.6, minlen=3, maxlen=15))
+rules2V1 <- subset(rules2, subset=rhs%in%"ViolentCrimesPerPop_numeric=1V")
+inspect(sort(rules2V1, by="support")[1:5])
+rules2V1L <- subset(rules2, subset=lhs%in%"ViolentCrimesPerPop_numeric=1V")
+inspect(sort(rules2V1L, by="support")[1:5])
 
 
 
