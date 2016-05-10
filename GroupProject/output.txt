@@ -1,0 +1,1001 @@
+> crimeData <- read.csv(file = "C:/Users/maryjoyce/git/COSC757/GroupProject/UCI/communities.data",
++                       header = FALSE, sep = ",", stringsAsFactors = TRUE,
++                       col.names = c("state_numeric", "county_numeric", "community_numeric", "community_name_string", "fold_numeric",
++                                     "population_numeric", "household_size_numeric", "race_percent_black_numeric", "race_percent_white_numeric",
++                                     "race_percent_asian_numeric", "race_percent_hispanic_numeric", "age_percent_12_to_21_numeric",
++                                     "age_percent_12_to_29_numeric", "age_percent_16_to_24_numeric", "age_percent_65_up_numeric",
++                                     "number_urban_numeric", "percent_urban_numeric", "median_income_numeric", "percent_with_wage_numeric",
++                                     "percent_with_farm_self_numeric", "percent_with_investment_income_numeric", "percent_with_social_security_numeric",
++                                     "percent_with_public_assistance_numeric", "percent_with_retire_numeric", "median_family_income_numeric",
++                                     "per_capita_income_numeric", "white_per_capita_numeric", "black_per_capita_numeric", "indian_per_capita_numeric",
++                                     "asian_per_capita_numeric", "other_per_capita_numeric", "hispanic_per_capitap_numeric", "number_under_poverty_numeric",
++                                     "percent_population_under_poverty_numeric", "percent_less_9th_grade_numeric", "percent_not_high_school_grad_numeric",
++                                     "percent_bachelors_or_more_numeric", "percent_unemployed_numeric", "percent_employed_numeric",
++                                     "percent_employed_manufacturing_numeric", "percent_employed_professional_service_numeric",
++                                     "percent_occupation_manufacturing_numeric", "percent_occupation_management_professional_numeric",
++                                     "male_percent_divorced_numeric", "male_percent_never_married_numeric", "female_percent_divorced_numeric",
++                                     "total_percent_divorced_numeric", "person_per_family_numeric","percent_family_2_parents_numeric",
++                                     "percent_kids_2_parents_numeric","percent_young_kids_2_parents_numeric", "percent_teen_2_parents_numeric",
++                                     "percent_working_mom_young_kids_numeric", "percent_working_mom_numeric", "num_illegitimate_numeric",
++                                     "percent_illegitimate_numeric", "number_immigrants_numeric", "percent_immigrants_recent_numeric",
++                                     "percent_immigrant_recent_5_numeric", "percent_immigrant_recent_8_numeric", "percent_immigrant_recent_10_numeric",
++                                     "percent_recent_immigrant_numeric", "percent_recent_immigrant_5_numeric", "percent_recent_immigrant_8_numeric",
++                                     "percent_recent_immigrant_10_numeric", "percent_speak_english_only_numeric", "percent_not_speak_english_well_numeric",
++                                     "percent_large_household_family","percent_large_household_occupied_numeric", "persons_per_occupied_household_numeric",
++                                     "persons_per_owner_occupied_household_numeric", "persons_per_rent_occupied_household_numeric",
++                                     "percent_person_owner_occupied_numeric", "percent_persons_dense_household_numeric", "percent_household_less_3_bedrooms_numeric",
++                                     "median_number_bedrooms_numeric", "households_vacant_numeric", "percent_households_occupied_numeric",
++                                     "percent_household_owner_occupied_numeric", "percent_vacant_boarded_numeric", "percent_vacant_more_6_months_numeric",
++                                     "median_year_housing_built_numeric", "percent_household_no_phone_numeric", "percent_with_out_full_plumbing_numeric",
++                                     "owner_occupied_low_quartile_numeric", "owner_occupied_median_value_numeric", "owner_occupied_high_quartile_numeric",
++                                     "rent_low_quartile_numeric", "rent_median_numeric", "rent_high_quartile_numeric", "median_rent_numeric",
++                                     "MedRentpercent_HousInc_numeric", "MedOwnCostpercent_Inc_numeric", "MedOwnCostpercent_IncNoMtg_numeric", "NumInShelters_numeric", "NumStreet_numeric",
++                                     "percent_ForeignBorn_numeric","percent_BornSameState_numeric", "percent_SameHouse85_numeric", "percent_SameCity85_numeric",
++                                     "percent_SameState85_numeric", "LemasSwornFT_numeric", "LemasSwFTPerPop_numeric", "LemasSwFTFieldOps_numeric",
++                                     "LemasSwFTFieldPerPop_numeric", "LemasTotalReq_numeric", "LemasTotReqPerPop_numeric", "PolicReqPerOffic_numeric",
++                                     "PolicPerPop_numeric", "RacialMatchCommPol_numeric", "percent_PolicWhite_numeric", "percent_PolicBlack_numeric",
++                                     "percent_PolicHisp_numeric", "percent_PolicAsian_numeric", "percent_PolicMinor_numeric", "OfficAssgnDrugUnits_numeric",
++                                     "NumKindsDrugsSeiz_numeric", "PolicAveOTWorked_numeric", "LandArea_numeric", "PopDens_numeric",
++                                     "percent_UsePubTrans_numeric", "PolicCars_numeric", "PolicOperBudg_numeric", "Lemaspercent_PolicOnPatr_numeric",
++                                     "LemasGangUnitDeploy_numeric", "Lemaspercent_OfficDrugUn_numeric", "PolicBudgPerPop_numeric", "ViolentCrimesPerPop_numeric"))
+> 
+> #crimeData[1:20,]
+> 
+> #crimeData[crimeData=="?"]<-0
+> 
+> #install.packages("rpart")
+> #library(rpart)
+> # install.packages("e1071")
+> # library(class)
+> # library(e1071)
+> # install.packages("randomForest")
+> # library(randomForest)
+> # library("arules", lib.loc="~/R/win-library/3.2")
+> # library(datasets)
+> 
+> 
+> 
+> binningFunct <- function(mNum, dataOrig, dataNew){
++   n.bins <- mNum*5
++   n.size<-length(dataOrig)
++   #  print(whichbin)
++   
++   binwidth<-1/n.bins
++   print(binwidth)
++   for (i in 1:n.bins){
++     for(j in 1:n.size){
++       if((i-1)*binwidth < dataOrig[j] && dataOrig[j] <= (i)*binwidth)
++         dataNew[j] <- i
++       if((i == 1) && (dataOrig[j] == 0)) {
++         dataNew[j] <- i
++       }
++     }
++   }
++   print(dataNew)
++   hist(dataNew,
++        breaks = mNum*5,
++        xlim = c(1,mNum*5),
++        col = "lightblue",
++        ylab = "Count",
++        xlab = "Bin",
++        main = "Histogram of A vs B")
++   return(dataNew)
++ }
+> 
+> # Assumed to matter
+> pairs(~crimeData$ViolentCrimesPerPop_numeric+
++         crimeData$PolicPerPop_numeric+
++         crimeData$per_capita_income_numeric+
++         crimeData$percent_bachelors_or_more_numeric)
+> 
+> # Determined to matter
+> pairs(~crimeData$ViolentCrimesPerPop_numeric+
++         crimeData$race_percent_white_numeric+
++         crimeData$percent_with_investment_income_numeric+
++         crimeData$percent_not_high_school_grad_numeric+
++         crimeData$total_percent_divorced_numeric)
+> 
+> #Scatterplots
+> plot(crimeData$race_percent_white_numeric,
++      crimeData$ViolentCrimesPerPop_numeric,
++      xlim = c(0,1),
++      ylim = c(0,1),
++      xlab = "Race Percent White",
++      ylab = "Violent Crimes Per Population",
++      main = "Scatterplot of VCPP by RPW",
++      type = "p",
++      pch = 16,
++      col = "green")
+> points(crimeData$race_percent_white_numeric,
++        crimeData$ViolentCrimesPerPop_numeric,
++        type = "p",
++        col = "black")
+> plot(crimeData$percent_with_investment_income_numeric,
++      crimeData$ViolentCrimesPerPop_numeric,
++      xlim = c(0,1),
++      ylim = c(0,1),
++      xlab = "Percent with Investment Incomce",
++      ylab = "Violent Crimes Per Population",
++      main = "Scatterplot of VCPP by PwII",
++      type = "p",
++      pch = 16,
++      col = "green")
+> points(crimeData$percent_with_investment_income_numeric,
++        crimeData$ViolentCrimesPerPop_numeric,
++        type = "p",
++        col = "black")
+> plot(crimeData$percent_not_high_school_grad_numeric,
++      crimeData$ViolentCrimesPerPop_numeric,
++      xlim = c(0,1),
++      ylim = c(0,1),
++      xlab = "Percent Not High School Graduates",
++      ylab = "Violent Crimes Per Population",
++      main = "Scatterplot of VCPP by PNHSG",
++      type = "p",
++      pch = 16,
++      col = "green")
+> points(crimeData$percent_not_high_school_grad_numeric,
++        crimeData$ViolentCrimesPerPop_numeric,
++        type = "p",
++        col = "black")
+> plot(crimeData$total_percent_divorced_numeric,
++      crimeData$ViolentCrimesPerPop_numeric,
++      xlim = c(0,1),
++      ylim = c(0,1),
++      xlab = "Total Percent Divorced",
++      ylab = "Violent Crimes Per Population",
++      main = "Scatterplot of VCPP by TPD",
++      type = "p",
++      pch = 16,
++      col = "green")
+> points(crimeData$total_percent_divorced_numeric,
++        crimeData$ViolentCrimesPerPop_numeric,
++        type = "p",
++        col = "black")
+> 
+> 
+> # 5/10 bins (number is off for some reason) for ViolentCrimesPerPop
+> for(m in 1:2) {
++   whichbinViolentCrimes <- crimeData
++   whichbinViolentCrimes$ViolentCrimesPerPop_numeric <- binningFunct(m, crimeData$ViolentCrimesPerPop_numeric, whichbinViolentCrimes$ViolentCrimesPerPop_numeric)
++ 
++   n.size<- length(crimeData$ViolentCrimesPerPop_numeric)
++   set.seed(1234)
++   ind <- sample(2, n.size, replace=TRUE,
++                 prob=c(0.7,0.3))
++   trainData <- whichbinViolentCrimes[ind==1, ]
++   testData <- whichbinViolentCrimes[ind==2,]
++   
++   # classification
++   crimeData_rpart <- rpart(ViolentCrimesPerPop_numeric ~ race_percent_white_numeric + percent_with_investment_income_numeric + percent_not_high_school_grad_numeric + total_percent_divorced_numeric, data = trainData, method = "class")
++   printcp(crimeData_rpart)
++   plotcp(crimeData_rpart)
++   plot(crimeData_rpart)
++   text(crimeData_rpart, use.n=TRUE)
++   crimeData_pred <- predict(crimeData_rpart, testData[,-6], type="class")
++   print(crimeData_pred)
++   print(table(crimeData_pred, testData$ViolentCrimesPerPop_numeric))
++   
++   #classifier <- naiveBayes(ViolentCrimesPerPop_numeric ~ race_percent_white_numeric + percent_with_investment_income_numeric + percent_not_high_school_grad_numeric + total_percent_divorced_numeric, data = trainData, method = "class")
++   #print(classifier)
++   #pred <- predict(classifier, testData[,-5])
++   #print(table(pred))
++   #print(table(testData$ViolentCrimesPerPop_numeric))
++   #print(table(pred,testData$ViolentCrimesPerPop_numeric))
++   #length(pred)
++   #length(testData$ViolentCrimesPerPop_numeric)
++   
++   # fit <- randomForest(class ~ balanceData, data = trainData)
++   #fit <- randomForest(ViolentCrimesPerPop_numeric ~ race_percent_white_numeric + percent_with_investment_income_numeric + percent_not_high_school_grad_numeric + total_percent_divorced_numeric, data = trainData, method = "class")
++   #print(fit)
++   #print(importance(fit))
++ 
++     ### Regression Analysis
++   nonall_crime<-crimeData$ViolentCrimesPerPop_numeric[!is.na(crimeData$ViolentCrimesPerPop_numeric) & !is.na(crimeData$race_percent_white_numeric) & !is.na(crimeData$percent_with_investment_income_numeric) & !is.na(crimeData$percent_not_high_school_grad_numeric) & !is.na(crimeData$total_percent_divorced_numeric)]
++   length(nonall_crime)
++   nonall_percent_white<-crimeData$race_percent_white_numeric[!is.na(crimeData$ViolentCrimesPerPop_numeric) & !is.na(crimeData$race_percent_white_numeric) & !is.na(crimeData$percent_with_investment_income_numeric) & !is.na(crimeData$percent_not_high_school_grad_numeric) & !is.na(crimeData$total_percent_divorced_numeric)]
++   length(nonall_percent_white)
++   nonall_investment<-crimeData$percent_with_investment_income_numeric[!is.na(crimeData$ViolentCrimesPerPop_numeric) & !is.na(crimeData$race_percent_white_numeric) & !is.na(crimeData$percent_with_investment_income_numeric) & !is.na(crimeData$percent_not_high_school_grad_numeric) & !is.na(crimeData$total_percent_divorced_numeric)]
++   length(nonall_investment)
++   nonall_not_high_school<-crimeData$percent_not_high_school_grad_numeric[!is.na(crimeData$ViolentCrimesPerPop_numeric) & !is.na(crimeData$race_percent_white_numeric) & !is.na(crimeData$percent_with_investment_income_numeric) & !is.na(crimeData$percent_not_high_school_grad_numeric) & !is.na(crimeData$total_percent_divorced_numeric)]
++   length(nonall_not_high_school)
++   nonall_divorce<-crimeData$total_percent_divorced_numeric[!is.na(crimeData$ViolentCrimesPerPop_numeric) & !is.na(crimeData$race_percent_white_numeric) & !is.na(crimeData$percent_with_investment_income_numeric) & !is.na(crimeData$percent_not_high_school_grad_numeric) & !is.na(crimeData$total_percent_divorced_numeric)]
++   length(nonall_divorce)
++   
++   fit.percent_white<-lm(nonall_crime ~ nonall_percent_white)
++   summary(fit.percent_white)
++   fit.investment<-lm(nonall_crime ~ nonall_investment)
++   summary(fit.investment)
++   fit.high_school<-lm(nonall_crime ~ nonall_not_high_school)
++   summary(fit.high_school)
++   fit.divorce<-lm(nonall_crime ~ nonall_divorce)
++   summary(fit.divorce)
++   
++   hypothesis<-cbind(nonall_crime,
++                     nonall_percent_white,
++                     nonall_investment,
++                     nonall_not_high_school,
++                     nonall_divorce)
++   percentWhiteTest<-cor.test(nonall_crime,
++                            nonall_percent_white)
++   investmentTest<-cor.test(nonall_crime,
++                        nonall_investment)
++   highSchoolTest<-cor.test(nonall_crime,
++                            nonall_not_high_school)
++   divorceTest<-cor.test(nonall_crime,
++                         nonall_divorce)
++   crimeTest1<-cor.test(nonall_percent_white,
++                       nonall_investment)
++   crimeTest2<-cor.test(nonall_percent_white,
++                        nonall_not_high_school)
++   crimeTest3<-cor.test(nonall_percent_white,
++                        nonall_divorce)
++   crimeTest4<-cor.test(nonall_investment,
++                        nonall_not_high_school)
++   crimeTest5<-cor.test(nonall_investment,
++                        nonall_divorce)
++   crimeTest6<-cor.test(nonall_not_high_school,
++                     nonall_divorce)
++   round(cor(hypothesis),
++         4)
++   percentWhiteTest$p.value
++   investmentTest$p.value
++   highSchoolTest$p.value
++   divorceTest$p.value
++   crimeTest1$p.value
++   crimeTest2$p.value
++   crimeTest3$p.value
++   crimeTest4$p.value
++   crimeTest5$p.value
++   crimeTest6$p.value
++   
++ }
+[1] 0.2
+   [1] 1 4 3 1 1 1 1 3 3 1 2 1 1 1 2 2 3 1 1 1 2 4 2 4 2 1 5 1 3 1 1 1 1 2 1 2 1 2 1 1 1 1 4 2 1 1 1 1 1 1 1 4 2 1 1 2 2 2 3 1
+  [61] 1 1 1 3 2 1 4 1 3 1 1 2 1 1 1 1 1 4 4 4 2 2 5 1 1 1 1 1 2 1 4 1 1 1 2 2 3 1 1 1 2 1 2 2 1 3 2 1 2 2 3 1 1 1 3 1 5 1 1 4
+ [121] 2 1 1 1 1 1 1 1 4 1 2 1 1 2 1 1 1 1 2 1 1 1 2 1 1 3 5 1 4 5 2 5 1 2 5 3 1 4 3 1 1 1 1 1 1 2 1 1 3 3 2 1 1 1 4 1 1 5 1 2
+ [181] 1 2 2 1 1 2 1 1 1 1 1 2 1 1 1 1 1 3 2 3 1 1 2 4 1 1 2 1 1 1 2 1 4 1 2 3 1 1 1 1 1 2 2 1 1 1 4 1 4 3 1 1 1 5 1 1 2 1 2 1
+ [241] 1 1 2 3 1 2 4 2 5 1 4 4 1 1 1 5 1 1 1 1 3 3 4 1 1 1 2 1 1 4 1 2 2 2 1 2 2 1 1 1 1 1 1 2 1 1 3 1 3 1 1 1 1 2 1 1 4 1 2 2
+ [301] 1 1 2 2 1 3 2 2 1 1 1 1 1 3 1 2 2 2 1 1 3 1 1 2 2 2 1 1 1 2 1 2 1 5 3 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 1 1 1 2 1 1 1 1
+ [361] 3 2 5 1 1 3 2 1 1 1 3 1 1 1 3 5 1 1 2 2 3 1 1 1 3 2 2 3 3 1 1 1 2 3 1 1 2 1 1 4 5 2 1 2 4 2 1 4 3 2 5 1 2 5 1 1 1 1 2 1
+ [421] 5 4 1 4 1 1 1 4 4 3 1 3 1 1 1 1 1 1 1 2 1 2 1 1 4 1 4 5 1 1 4 1 1 1 4 1 1 5 1 1 3 1 5 2 2 1 2 1 1 1 2 1 4 3 2 2 1 2 1 2
+ [481] 2 2 4 1 1 2 1 1 1 1 1 2 1 1 2 2 1 1 1 5 1 2 1 1 2 4 1 1 2 1 1 2 1 2 2 1 1 1 1 1 1 1 3 2 1 4 2 1 3 1 1 1 3 1 1 1 1 1 1 5
+ [541] 1 1 1 1 2 5 1 1 1 2 1 1 3 2 1 3 1 2 2 1 5 1 1 2 5 1 2 3 2 2 1 1 1 1 1 1 1 1 1 1 1 1 2 1 1 1 3 3 1 1 3 5 1 1 1 1 1 2 2 1
+ [601] 5 2 2 1 3 2 1 1 3 1 3 1 2 1 2 5 1 1 1 1 2 1 1 1 2 1 1 1 1 1 5 5 1 2 1 1 1 3 1 1 2 5 4 1 1 2 1 1 3 1 1 1 1 1 1 1 2 1 1 3
+ [661] 2 1 2 4 1 2 2 5 2 5 2 1 1 4 2 5 5 1 5 1 2 2 3 2 2 1 1 4 3 1 1 3 4 2 2 4 1 1 3 3 3 1 1 1 1 2 3 1 2 1 1 4 1 1 2 1 2 1 1 1
+ [721] 1 1 2 5 1 1 5 2 1 2 1 3 4 1 1 2 1 1 2 1 2 2 3 1 1 2 1 1 1 1 1 1 1 1 1 1 1 2 2 1 1 2 1 1 1 1 2 2 1 2 3 1 2 1 2 2 5 3 1 3
+ [781] 2 4 1 4 1 1 3 1 1 1 1 3 1 2 1 2 1 1 1 1 1 2 1 3 2 1 1 1 2 1 5 2 1 1 1 1 1 1 2 1 1 2 1 1 1 1 1 2 5 2 1 1 1 1 1 2 4 1 1 1
+ [841] 2 5 2 3 1 3 2 2 1 1 1 1 1 1 2 4 1 3 5 2 1 1 2 1 2 1 5 4 1 4 3 2 1 1 2 1 2 2 1 1 1 1 1 3 1 1 2 1 1 2 1 1 1 1 1 1 2 2 3 2
+ [901] 1 1 3 1 1 1 3 1 1 5 1 1 1 1 1 1 1 3 1 1 3 1 2 1 2 1 2 1 2 2 1 3 1 1 1 1 1 1 1 1 1 1 1 1 1 4 1 4 1 1 2 1 4 4 2 5 1 5 2 2
+ [961] 2 3 1 1 1 1 3 1 2 2 4 1 2 4 1 1 4 2 2 1 1 1 2 1 1 1 2 1 1 1 1 2 3 1 1 2 1 1 5 1 1 5 1 1 3 1 4 1 3 1 1 2 2 1 2 2 1 1 1 1
+[1021] 1 1 1 1 1 5 2 1 2 3 1 1 1 1 1 1 1 2 1 3 1 5 1 1 5 1 1 1 1 1 1 3 3 3 2 2 5 2 2 2 2 1 1 1 2 1 1 2 1 2 1 2 1 3 1 1 1 1 1 1
+[1081] 1 2 1 2 1 2 1 1 1 1 2 2 1 4 1 2 3 1 1 2 1 1 2 1 1 1 1 1 2 1 1 1 1 1 1 1 3 1 1 5 1 1 1 1 1 4 1 1 1 2 1 1 1 1 5 2 2 1 1 1
+[1141] 2 1 3 1 2 2 4 1 1 3 1 3 1 2 5 1 2 2 1 5 2 1 2 1 1 2 2 1 1 3 3 3 2 1 1 2 1 1 1 1 4 1 4 3 1 2 1 3 1 1 1 1 3 1 1 2 4 1 1 1
+[1201] 5 1 1 1 2 1 1 4 5 1 1 4 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 2 1 2 1 1 2 1 1 2 1 3 1 1 2 1 1 1 3 1 2 1 1 1 3 2 1 2 1 1 2 3 2 1
+[1261] 1 3 5 1 1 2 1 1 1 2 5 2 1 5 5 2 1 1 1 3 1 1 1 2 1 3 3 3 1 1 2 1 5 1 1 5 2 1 1 2 2 2 1 2 1 1 3 3 1 1 3 1 4 3 1 1 1 1 1 1
+[1321] 2 2 1 1 2 2 5 1 1 2 1 3 1 2 1 1 1 1 2 1 1 3 1 1 1 1 1 1 1 1 3 2 1 5 1 1 1 2 1 1 3 1 2 1 5 1 2 1 1 1 2 1 2 2 1 1 3 1 3 2
+[1381] 2 1 3 1 1 1 1 1 1 2 1 1 5 2 1 1 1 3 1 1 1 1 2 1 2 1 1 1 1 1 2 1 1 3 1 1 1 2 1 1 3 4 1 1 1 1 1 1 3 1 1 3 3 1 1 2 4 1 2 1
+[1441] 1 3 1 1 3 2 2 1 1 1 3 3 2 1 1 1 2 2 1 2 1 1 1 1 1 2 2 2 1 3 1 1 2 1 1 2 1 3 1 3 2 4 1 1 1 1 5 3 1 1 1 1 2 1 2 1 1 1 1 1
+[1501] 1 2 4 1 1 2 3 2 4 2 1 2 2 2 2 1 1 1 2 1 1 1 1 2 5 1 2 2 2 1 1 1 3 1 2 1 3 2 2 2 1 2 2 2 4 1 1 1 1 1 1 1 1 1 4 2 2 2 1 1
+[1561] 2 1 1 5 2 1 2 3 1 3 3 1 1 2 2 1 1 1 1 1 3 1 4 1 2 1 1 1 1 1 2 1 1 1 2 5 1 3 2 1 1 3 1 1 1 1 1 4 1 1 5 1 5 1 1 1 1 2 1 2
+[1621] 1 1 1 3 2 3 2 1 2 1 1 1 2 4 1 1 5 1 1 1 4 2 1 1 1 1 1 2 1 2 1 2 1 1 1 3 1 1 1 1 1 3 2 4 3 1 1 1 1 2 3 2 1 1 1 1 2 3 2 1
+[1681] 1 1 1 2 5 1 4 1 1 2 2 2 1 1 1 2 1 1 3 2 3 1 1 3 1 1 1 2 1 2 2 2 1 1 1 1 1 1 2 2 1 5 1 1 1 1 2 3 2 2 1 1 2 1 1 1 1 1 1 1
+[1741] 1 1 1 1 1 1 1 3 1 4 1 2 1 3 3 1 2 1 2 5 1 1 1 1 2 1 1 4 1 1 2 1 1 4 1 5 1 3 3 1 1 1 1 3 1 1 1 2 2 3 3 1 3 1 1 1 1 1 1 1
+[1801] 1 4 1 2 1 3 1 1 2 1 4 3 1 3 1 4 1 3 1 2 2 2 2 3 1 1 1 1 1 1 1 5 1 1 1 4 5 1 3 1 1 1 2 3 1 1 1 5 1 3 1 2 2 1 1 1 1 1 1 2
+[1861] 2 1 2 1 1 5 1 1 1 1 2 1 3 1 2 2 1 1 5 1 2 1 1 1 2 1 2 2 1 1 1 2 1 2 1 1 1 1 1 1 3 1 1 2 1 1 1 3 1 2 4 1 1 2 3 1 4 1 2 2
+[1921] 1 1 2 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 1 1 1 2 1 2 1 1 3 1 2 5 2 1 1 1 2 3 3 4 2 1 1 4 3 2 2 1 3 1 1 2 1 1
+[1981] 2 1 1 3 1 1 1 1 1 1 3 2 1 3
+
+Classification tree:
+rpart(formula = ViolentCrimesPerPop_numeric ~ race_percent_white_numeric + 
+    percent_with_investment_income_numeric + percent_not_high_school_grad_numeric + 
+    total_percent_divorced_numeric, data = trainData, method = "class")
+
+Variables actually used in tree construction:
+[1] percent_not_high_school_grad_numeric   percent_with_investment_income_numeric race_percent_white_numeric            
+[4] total_percent_divorced_numeric        
+
+Root node error: 595/1424 = 0.41784
+
+n= 1424 
+
+        CP nsplit rel error  xerror     xstd
+1 0.081513      0   1.00000 1.00000 0.031280
+2 0.018487      2   0.83697 0.84874 0.030341
+3 0.010084      4   0.80000 0.84202 0.030286
+4 0.010000      7   0.76975 0.84370 0.030300
+   5   14   16   26   28   29   36   39   40   50   53   58   60   61   66   72   74   81   86   90   92  100  111  113  116 
+   1    1    1    1    1    2    1    2    2    1    1    1    1    1    1    1    1    1    1    1    1    1    2    1    1 
+ 117  120  121  122  123  124  131  135  137  140  142  147  149  154  156  158  169  171  173  176  185  187  190  192  194 
+   5    2    1    1    1    1    2    1    1    1    1    2    2    1    2    2    2    1    1    1    1    1    1    1    1 
+ 195  196  197  198  199  204  206  210  214  216  218  220  227  231  234  237  240  245  247  249  250  261  267  270  272 
+   1    1    1    5    1    2    1    1    1    1    1    1    2    1    2    1    1    2    2    5    1    1    2    1    1 
+ 274  277  283  284  285  290  293  296  302  305  308  310  311  320  322  330  331  332  333  339  341  344  349  352  354 
+   2    5    1    1    1    1    1    1    1    1    1    1    1    1    1    2    1    1    1    2    1    1    1    1    1 
+ 355  356  358  360  365  366  369  370  371  373  377  389  390  392  393  396  403  404  407  411  412  413  415  418  422 
+   1    1    1    1    1    2    1    1    5    1    1    1    1    1    1    1    2    2    1    5    2    2    1    1    1 
+ 425  432  434  438  439  441  442  443  445  447  452  453  454  455  462  474  476  479  487  488  489  492  493  502  503 
+   1    5    2    1    2    1    2    1    5    2    1    2    1    2    1    2    1    1    1    1    1    2    1    1    1 
+ 506  507  508  510  512  513  516  521  524  526  534  536  539  543  545  547  548  549  550  553  555  556  560  562  564 
+   2    2    1    1    1    1    1    1    2    2    1    1    1    1    2    1    1    1    1    2    1    5    2    1    2 
+ 566  567  572  580  581  588  589  591  592  607  612  615  619  621  624  626  628  631  635  636  638  644  648  650  653 
+   1    1    1    1    1    1    1    2    5    2    1    1    2    2    1    1    1    5    1    1    2    1    1    1    1 
+ 657  660  662  663  667  670  672  675  676  678  680  685  687  691  700  703  711  712  713  719  721  723  726  730  731 
+   1    1    1    2    1    2    1    2    2    1    1    2    1    1    2    2    1    2    1    1    1    1    1    2    1 
+ 736  738  739  740  752  754  756  758  767  769  771  772  773  781  787  789  791  795  798  800  802  813  818  826  832 
+   2    1    1    1    2    1    1    1    2    1    2    1    2    2    1    1    2    1    1    2    2    1    1    1    1 
+ 833  834  837  846  848  849  850  852  853  859  860  866  868  871  872  873  875  886  891  892  899  900  903  905  909 
+   1    1    2    2    2    1    1    1    1    2    1    1    2    2    2    1    2    2    1    1    2    1    1    1    1 
+ 918  919  920  927  932  941  943  944  951  952  954  955  957  963  964  971  972  974  977  979  981  982  985  988  993 
+   2    1    1    2    2    1    1    1    1    1    5    1    1    1    1    5    1    2    5    2    1    1    1    1    2 
+ 997  999 1001 1005 1009 1010 1012 1020 1024 1027 1032 1034 1039 1041 1044 1045 1050 1052 1058 1060 1063 1066 1067 1082 1083 
+   1    2    1    2    1    1    2    1    1    1    1    1    1    2    1    5    1    2    1    1    1    2    1    1    1 
+1097 1098 1099 1111 1114 1116 1117 1119 1122 1124 1129 1131 1132 1137 1140 1144 1162 1166 1169 1175 1176 1183 1184 1187 1195 
+   1    1    1    1    1    1    2    1    1    1    2    1    1    1    1    1    1    2    2    1    1    2    2    1    1 
+1203 1206 1207 1208 1210 1213 1215 1216 1218 1219 1222 1230 1233 1234 1236 1241 1249 1250 1251 1254 1257 1260 1261 1263 1264 
+   1    1    1    2    1    1    1    1    2    1    1    1    1    1    1    2    1    1    2    2    1    1    1    5    2 
+1278 1279 1280 1294 1296 1302 1306 1313 1318 1322 1323 1324 1337 1341 1342 1343 1344 1346 1352 1355 1365 1372 1373 1374 1376 
+   1    1    2    1    2    2    1    1    1    2    1    1    1    1    2    1    1    1    2    5    5    1    2    1    1 
+1382 1383 1384 1385 1387 1393 1397 1399 1400 1403 1404 1406 1416 1417 1421 1422 1423 1426 1432 1438 1439 1444 1445 1461 1462 
+   1    2    1    1    2    2    2    1    1    2    1    1    1    1    1    1    1    1    2    1    2    1    2    1    1 
+1463 1464 1465 1473 1474 1481 1482 1485 1490 1493 1499 1500 1504 1505 1506 1508 1514 1521 1526 1527 1531 1539 1541 1547 1554 
+   1    1    1    1    1    2    5    1    1    5    1    1    1    2    1    1    1    1    1    1    1    2    2    1    1 
+1561 1573 1581 1582 1584 1586 1593 1596 1600 1607 1611 1617 1621 1622 1623 1624 1629 1632 1636 1640 1643 1646 1647 1648 1649 
+   2    1    2    1    1    1    1    2    1    1    2    1    2    1    1    2    2    1    1    1    1    1    1    2    1 
+1651 1652 1658 1660 1667 1669 1671 1673 1694 1697 1707 1731 1734 1739 1740 1746 1750 1751 1754 1755 1756 1757 1760 1767 1768 
+   1    2    1    1    1    1    2    1    2    1    1    1    1    1    1    1    2    2    2    1    1    1    5    1    2 
+1769 1771 1775 1777 1779 1780 1782 1783 1785 1787 1791 1797 1799 1807 1810 1811 1818 1820 1825 1826 1833 1834 1850 1851 1855 
+   1    1    2    1    2    1    1    1    1    1    2    1    1    1    1    2    2    2    1    1    1    1    5    1    1 
+1860 1862 1863 1864 1866 1869 1870 1875 1876 1877 1881 1882 1894 1896 1900 1904 1907 1908 1910 1911 1921 1922 1925 1929 1930 
+   2    1    2    1    2    1    1    1    2    2    1    1    1    1    1    1    1    2    1    2    2    2    1    1    1 
+1934 1938 1945 1951 1954 1956 1961 1963 1964 1965 1966 1971 1972 1974 1976 1977 1980 1985 1987 1993 
+   1    1    1    1    1    1    1    2    2    2    2    2    2    1    1    1    1    1    1    1 
+Levels: 1 2 3 4 5
+              
+crimeData_pred   1   2   3   4   5
+             1 324  56  11   4   0
+             2  34  49  38  21  11
+             3   0   0   0   0   0
+             4   0   0   0   0   0
+             5   1   2   5   5   9
+[1] 0.1
+   [1]  2  7  5  2  1  2  1  6  6  2  3  1  1  1  3  3  5  1  2  1  4  7  3  7  4  2  9  1  5  1  2  2  2  4  1  3  2  3  2  1
+  [41]  2  1  8  3  2  2  2  2  2  2  2  7  3  1  1  3  3  3  6  1  1  1  1  6  4  2  7  1  5  1  1  3  1  1  2  2  2  7  7  8
+  [81]  3  3 10  1  1  1  1  1  3  2  7  1  1  2  4  4  5  1  1  1  4  1  4  3  1  5  3  1  3  4  6  1  1  2  6  1  9  1  1  7
+ [121]  3  1  1  1  2  2  2  2  7  1  3  2  2  3  1  1  1  2  4  1  1  1  3  1  2  6 10  1  7 10  3  9  1  3  9  5  1  8  5  1
+ [161]  1  1  2  2  1  3  1  2  5  5  3  1  1  2  8  2  1  9  1  3  2  3  3  1  2  4  2  1  1  1  1  3  1  1  1  1  1  5  3  5
+ [201]  2  2  3  7  1  2  3  2  1  2  3  1  7  1  3  5  1  1  2  1  1  4  4  1  2  1  8  2  7  5  1  1  2  9  2  2  3  1  4  2
+ [241]  1  2  4  6  2  3  7  3 10  1  8  7  1  1  1 10  2  1  1  1  6  6  7  1  1  2  4  2  1  7  2  3  4  3  2  4  4  1  1  1
+ [281]  1  2  1  4  2  2  6  1  6  1  1  1  1  3  1  2  7  1  3  4  2  1  4  3  1  5  3  4  1  1  2  2  2  6  2  3  4  4  1  2
+ [321]  5  1  1  3  3  4  1  2  2  4  1  4  1 10  5  1  1  1  2  1  1  1  1  1  1  2  6  1  1  1  1  1  1  1  1  3  1  1  1  1
+ [361]  5  3 10  1  1  5  4  2  1  1  6  2  1  1  6  9  1  1  3  3  5  1  1  2  6  4  4  5  5  1  1  1  3  6  1  1  4  1  2  8
+ [401] 10  4  1  3  7  4  2  7  6  3 10  2  3 10  1  2  1  2  3  1 10  7  1  7  1  2  1  8  8  5  1  6  1  2  1  1  1  1  2  3
+ [441]  2  4  1  1  8  1  7 10  1  1  7  1  2  1  7  1  2 10  1  1  6  1 10  4  4  1  3  2  2  1  3  1  8  5  4  3  2  4  1  3
+ [481]  4  3  7  2  1  3  1  1  2  1  1  3  1  1  4  3  2  2  2 10  1  3  2  1  3  7  2  2  3  1  2  3  2  3  3  1  2  1  2  1
+ [521]  2  2  5  3  1  7  3  1  6  1  1  2  5  2  1  2  1  2  1 10  2  2  1  1  4  9  2  2  1  3  1  1  6  3  1  6  1  4  4  1
+ [561]  9  1  2  3 10  1  4  5  4  4  2  2  1  2  1  1  1  1  1  2  1  2  3  2  1  1  6  6  2  2  5  9  1  1  1  2  2  3  3  1
+ [601]  9  4  3  1  6  3  2  2  6  1  5  2  3  1  4  9  1  2  2  2  4  1  1  1  3  1  1  1  1  2  9  9  2  4  1  1  2  6  2  2
+ [641]  3 10  7  1  1  3  2  1  5  1  2  2  1  1  1  1  3  1  2  5  3  1  4  7  1  3  3 10  4  9  3  1  1  7  3 10  9  2 10  1
+ [681]  4  4  6  3  3  1  2  7  5  2  1  6  7  4  4  8  1  1  6  6  5  1  1  1  2  3  5  2  4  1  1  7  1  2  3  2  3  1  2  1
+ [721]  2  1  3  9  2  1  9  4  1  3  1  6  7  2  1  4  2  1  3  2  3  3  6  2  1  3  1  2  1  1  2  1  2  1  2  2  1  3  4  2
+ [761]  2  3  2  2  1  1  4  3  1  3  6  1  4  1  3  3 10  5  2  5  3  7  1  7  1  2  5  1  1  1  2  5  1  3  2  3  1  1  1  1
+ [801]  1  3  1  5  3  2  1  1  3  1 10  3  2  1  2  1  2  1  3  2  1  3  1  1  1  1  1  3 10  4  1  1  1  1  2  3  8  2  1  1
+ [841]  3 10  4  6  2  5  4  4  1  1  1  1  1  1  4  7  2  6 10  3  2  1  3  1  3  1  9  8  2  7  6  4  2  2  4  1  3  3  1  2
+ [881]  1  1  1  5  1  2  3  1  1  3  2  1  1  1  2  1  3  3  5  3  1  1  6  2  1  1  5  1  1 10  1  1  2  2  1  2  1  6  2  1
+ [921]  5  1  3  2  4  1  3  1  3  3  1  5  2  1  1  1  2  1  2  1  2  2  2  1  2  7  2  7  2  2  3  2  8  8  3 10  1 10  3  3
+ [961]  3  6  1  1  1  2  6  1  3  3  7  1  3  7  2  1  8  4  4  1  2  1  3  1  1  1  3  1  1  1  2  4  5  1  1  4  1  1 10  1
+[1001]  1 10  2  2  5  2  7  1  5  1  1  4  3  1  3  3  1  2  1  1  2  2  2  1  2 10  3  1  3  5  2  1  1  1  1  1  1  4  2  6
+[1041]  2 10  1  1 10  1  1  1  1  1  2  5  5  5  4  3 10  4  3  4  3  2  1  1  3  2  1  4  1  4  2  3  1  6  2  1  1  2  2  2
+[1081]  1  4  1  3  1  4  1  2  1  1  3  4  1  8  2  3  5  1  2  3  1  1  4  2  2  1  1  2  4  1  1  1  1  2  1  2  5  2  2 10
+[1121]  2  1  1  1  1  8  2  1  2  4  1  1  1  1 10  3  3  1  2  1  3  1  6  1  3  4  7  1  1  6  1  6  2  3 10  1  3  4  1 10
+[1161]  3  2  3  1  2  4  4  1  2  6  6  5  3  1  1  3  2  1  2  1  7  2  7  5  1  4  1  5  2  2  1  2  6  1  1  4  7  1  1  1
+[1201]  9  1  2  1  4  1  2  7 10  2  1  8  1  1  1  1  2  3  1  1  2  1  2  2  2  2  2  3  1  4  1  1  4  2  1  4  1  5  1  2
+[1241]  4  1  1  1  6  1  3  2  1  2  5  3  1  4  2  1  3  6  3  2  1  5  9  2  1  4  1  1  1  4 10  4  2 10 10  3  1  2  2  6
+[1281]  1  1  2  4  1  6  5  6  1  2  3  2  9  1  2 10  3  1  1  3  3  4  1  4  2  1  6  6  2  2  5  1  7  5  2  2  2  2  1  1
+[1321]  3  4  1  1  3  4  9  2  1  3  1  5  2  4  1  1  2  1  3  1  1  5  1  1  1  2  1  1  1  2  6  3  2  9  2  1  1  3  2  2
+[1361]  5  2  3  1 10  1  4  2  1  2  4  1  4  4  2  2  6  1  6  4  4  1  5  2  2  1  2  1  2  4  2  1  9  3  1  1  2  6  2  2
+[1401]  1  2  4  1  3  1  1  1  1  2  3  2  1  5  1  1  2  3  2  2  6  7  1  1  1  1  2  2  6  1  1  6  6  1  1  3  7  1  3  1
+[1441]  2  5  1  2  6  3  3  1  1  2  5  6  4  2  2  2  4  4  2  4  1  1  1  1  1  4  3  4  1  5  2  1  3  1  1  3  2  5  1  6
+[1481]  4  7  2  1  1  1  9  6  1  1  1  2  3  1  3  2  2  2  1  2  1  3  8  2  2  3  6  4  7  4  2  4  4  3  4  1  1  2  4  1
+[1521]  1  1  1  3 10  1  3  3  3  2  2  1  5  2  3  1  6  4  4  4  2  3  3  4  8  2  1  2  1  1  1  2  1  2  8  4  4  4  2  2
+[1561]  3  1  1 10  3  1  3  5  1  6  6  1  2  4  4  2  2  2  1  2  5  2  7  1  3  1  1  1  1  2  3  2  2  1  3  9  2  5  3  1
+[1601]  1  6  1  2  1  1  1  7  2  1 10  1  9  2  1  1  1  4  1  3  2  1  1  5  4  5  3  1  4  1  1  1  3  8  1  2  9  1  2  1
+[1641]  8  3  1  1  2  1  1  4  1  3  1  3  1  1  1  5  1  1  1  1  1  6  4  8  5  1  1  1  1  3  5  3  1  2  2  2  3  6  4  1
+[1681]  2  2  1  4 10  1  7  1  1  4  4  3  2  2  1  4  2  1  6  4  5  1  1  6  1  1  1  4  1  3  3  3  2  1  2  1  2  2  3  3
+[1721]  2 10  1  2  2  1  4  5  4  4  2  1  3  2  1  1  1  2  2  2  1  1  2  2  1  1  1  5  2  7  2  4  2  6  6  1  3  1  3 10
+[1761]  2  1  1  2  3  1  1  7  1  2  4  2  1  8  2  9  1  5  5  2  1  1  1  6  1  1  1  3  4  6  6  1  6  1  1  1  2  2  2  2
+[1801]  1  8  1  3  1  5  2  2  3  1  7  6  1  5  1  7  1  5  1  3  3  4  3  5  1  2  1  1  1  1  1  9  1  1  2  7  9  2  6  2
+[1841]  2  2  3  5  1  2  1 10  2  6  2  3  3  1  2  1  2  2  2  4  3  2  3  1  1 10  2  1  1  2  4  2  6  1  3  4  2  2  9  2
+[1881]  3  1  1  2  4  1  3  4  1  1  1  3  2  3  1  2  1  2  1  1  5  2  2  3  1  2  1  5  1  3  7  1  2  3  6  1  7  2  3  3
+[1921]  2  2  4  2  2  3  1  1  2  2  1  2  1  1  2  1  1  1  2  1  6  2  2  2  2  2  2  1  2  3  2  3  2  1  5  1  3 10  4  1
+[1961]  1  1  4  5  6  7  3  1  2  8  6  3  3  1  6  1  1  3  1  2  3  1  1  6  2  2  1  1  2  1  5  3  2  5
+
+Classification tree:
+rpart(formula = ViolentCrimesPerPop_numeric ~ race_percent_white_numeric + 
+    percent_with_investment_income_numeric + percent_not_high_school_grad_numeric + 
+    total_percent_divorced_numeric, data = trainData, method = "class")
+
+Variables actually used in tree construction:
+[1] percent_not_high_school_grad_numeric race_percent_white_numeric           total_percent_divorced_numeric      
+
+Root node error: 911/1424 = 0.63975
+
+n= 1424 
+
+        CP nsplit rel error  xerror     xstd
+1 0.084523      0   1.00000 1.00000 0.019886
+2 0.028540      1   0.91548 0.94292 0.020265
+3 0.013721      2   0.88694 0.90011 0.020472
+4 0.013172      4   0.85950 0.90340 0.020458
+5 0.012075      5   0.84632 0.90011 0.020472
+6 0.010000      8   0.80351 0.89572 0.020489
+   5   14   16   26   28   29   36   39   40   50   53   58   60   61   66   72   74   81   86   90   92  100  111  113  116 
+   1    1    1    2    1    3    2    3    2    1    3    1    1    1    2    2    1    3    1    1    2    1    3    1    1 
+ 117  120  121  122  123  124  131  135  137  140  142  147  149  154  156  158  169  171  173  176  185  187  190  192  194 
+  10    2    2    1    1    2    4    1    1    1    1    4    3    1    4    4    4    2    1    3    1    1    1    1    1 
+ 195  196  197  198  199  204  206  210  214  216  218  220  227  231  234  237  240  245  247  249  250  261  267  270  272 
+   1    1    1   10    2    4    2    1    1    2    1    1    3    2    4    2    2    3    3   10    1    1    4    1    1 
+ 274  277  283  284  285  290  293  296  302  305  308  310  311  320  322  330  331  332  333  339  341  344  349  352  354 
+   3   10    1    2    3    1    1    1    2    2    2    1    1    2    1    4    1    2    1    3    1    1    1    1    1 
+ 355  356  358  360  365  366  369  370  371  373  377  389  390  392  393  396  403  404  407  411  412  413  415  418  422 
+   1    1    1    1    2    3    1    1   10    1    1    3    1    2    2    1    3    4    1   10    3    3    1    1    1 
+ 425  432  434  438  439  441  442  443  445  447  452  453  454  455  462  474  476  479  487  488  489  492  493  502  503 
+   1   10    4    1    4    2    3    1   10    3    1    3    2    3    1    3    2    1    1    2    2    4    1    2    1 
+ 506  507  508  510  512  513  516  521  524  526  534  536  539  543  545  547  548  549  550  553  555  556  560  562  564 
+   3    3    2    1    2    2    1    1    3    2    2    2    1    1    3    1    1    1    1    4    2   10    2    1    3 
+ 566  567  572  580  581  588  589  591  592  607  612  615  619  621  624  626  628  631  635  636  638  644  648  650  653 
+   1    2    1    1    1    3    1    4   10    3    2    2    4    3    1    2    1   10    2    2    3    1    1    1    1 
+ 657  660  662  663  667  670  672  675  676  678  680  685  687  691  700  703  711  712  713  719  721  723  726  730  731 
+   2    1    1    2    3    4    1    3    4    1    1    3    1    1    4    3    1    3    1    1    2    2    1    3    1 
+ 736  738  739  740  752  754  756  758  767  769  771  772  773  781  787  789  791  795  798  800  802  813  818  826  832 
+   4    1    1    1    2    1    2    2    3    1    3    1    3    4    2    1    4    1    2    2    4    2    1    1    1 
+ 833  834  837  846  848  849  850  852  853  859  860  866  868  871  872  873  875  886  891  892  899  900  903  905  909 
+   1    1    3    4    3    1    1    1    1    3    3    2    3    4    4    1    3    3    2    1    3    2    1    1    1 
+ 918  919  920  927  932  941  943  944  951  952  954  955  957  963  964  971  972  974  977  979  981  982  985  988  993 
+   4    2    1    2    3    1    2    1    1    1   10    1    1    1    1   10    1    4   10    3    1    1    1    1    3 
+ 997  999 1001 1005 1009 1010 1012 1020 1024 1027 1032 1034 1039 1041 1044 1045 1050 1052 1058 1060 1063 1066 1067 1082 1083 
+   1    4    1    4    2    2    4    1    1    1    1    2    1    3    1   10    1    3    1    2    1    4    1    1    1 
+1097 1098 1099 1111 1114 1116 1117 1119 1122 1124 1129 1131 1132 1137 1140 1144 1162 1166 1169 1175 1176 1183 1184 1187 1195 
+   1    2    2    1    1    2    3    1    1    2    3    2    2    3    1    1    1    3    3    1    1    4    3    1    3 
+1203 1206 1207 1208 1210 1213 1215 1216 1218 1219 1222 1230 1233 1234 1236 1241 1249 1250 1251 1254 1257 1260 1261 1263 1264 
+   2    1    2    3    1    1    1    1    3    1    1    1    1    1    1    3    1    1    4    4    1    1    1   10    2 
+1278 1279 1280 1294 1296 1302 1306 1313 1318 1322 1323 1324 1337 1341 1342 1343 1344 1346 1352 1355 1365 1372 1373 1374 1376 
+   1    2    3    1    4    3    1    2    1    3    1    1    1    1    3    1    1    2    4   10   10    1    4    2    1 
+1382 1383 1384 1385 1387 1393 1397 1399 1400 1403 1404 1406 1416 1417 1421 1422 1423 1426 1432 1438 1439 1444 1445 1461 1462 
+   1    3    1    1    2    3    4    1    1    4    1    1    1    2    2    1    1    1    3    1    4    3    3    1    1 
+1463 1464 1465 1473 1474 1481 1482 1485 1490 1493 1499 1500 1504 1505 1506 1508 1514 1521 1526 1527 1531 1539 1541 1547 1554 
+   1    1    1    3    1    3   10    1    1   10    1    2    1    3    3    2    1    1    2    1    1    3    3    1    1 
+1561 1573 1581 1582 1584 1586 1593 1596 1600 1607 1611 1617 1621 1622 1623 1624 1629 1632 1636 1640 1643 1646 1647 1648 1649 
+   3    1    4    1    1    3    1    4    1    1    3    1    3    1    1    3    4    1    1    1    1    1    1    4    1 
+1651 1652 1658 1660 1667 1669 1671 1673 1694 1697 1707 1731 1734 1739 1740 1746 1750 1751 1754 1755 1756 1757 1760 1767 1768 
+   3    3    1    2    2    1    4    1    2    1    2    1    2    2    2    1    3    3    3    2    1    1   10    1    2 
+1769 1771 1775 1777 1779 1780 1782 1783 1785 1787 1791 1797 1799 1807 1810 1811 1818 1820 1825 1826 1833 1834 1850 1851 1855 
+   1    3    3    1    4    3    1    1    2    1    3    1    2    2    1    4    4    3    1    1    1    1   10    2    1 
+1860 1862 1863 1864 1866 1869 1870 1875 1876 1877 1881 1882 1894 1896 1900 1904 1907 1908 1910 1911 1921 1922 1925 1929 1930 
+   3    2    3    1    3    1    1    1    3    3    3    1    2    1    1    2    3    3    1    4    4    4    1    2    2 
+1934 1938 1945 1951 1954 1956 1961 1963 1964 1965 1966 1971 1972 1974 1976 1977 1980 1985 1987 1993 
+   1    1    2    1    1    1    1    4    4    4    3    3    3    1    2    1    3    1    1    1 
+Levels: 1 2 3 4 5 6 7 8 9 10
+              
+crimeData_pred   1   2   3   4   5   6   7   8   9  10
+            1  193  59  18   5   2   2   3   0   0   0
+            2   31  39  17   9   3   2   4   0   0   0
+            3    6  22  21  17  14  10   9   3   1   3
+            4    0   8   7  11  11   5   5   1   3   4
+            5    0   0   0   0   0   0   0   0   0   0
+            6    0   0   0   0   0   0   0   0   0   0
+            7    0   0   0   0   0   0   0   0   0   0
+            8    0   0   0   0   0   0   0   0   0   0
+            9    0   0   0   0   0   0   0   0   0   0
+            10   0   1   1   1   1   4   2   3   4   5
+> 
+> 
+> # 5 Bin for frequent itemsets
+> for(q in 1:1) {
++ 
++   newBin <- crimeData
++   newBin$ViolentCrimesPerPop_numeric <- binningFunct(q, crimeData$ViolentCrimesPerPop_numeric, newBin$ViolentCrimesPerPop_numeric)
++   newBin$race_percent_white_numeric <- binningFunct(q, crimeData$race_percent_white_numeric, newBin$race_percent_white_numeric)
++   newBin$percent_with_investment_income_numeric <- binningFunct(q, crimeData$percent_with_investment_income_numeric, newBin$percent_with_investment_income_numeric)
++   newBin$percent_not_high_school_grad_numeric <- binningFunct(q, crimeData$percent_not_high_school_grad_numeric, newBin$percent_not_high_school_grad_numeric)
++   newBin$total_percent_divorced_numeric <- binningFunct(q, crimeData$total_percent_divorced_numeric, newBin$total_percent_divorced_numeric)
++ 
++ # Frequent itemsets pre-processing
++ newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="1"]<-"1V"
++ newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="2"]<-"2V"
++ newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="3"]<-"3V"
++ newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="4"]<-"4V"
++ newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="5"]<-"5V"
++ if(q == 2) {
++   newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="6"]<-"6V"
++   newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="7"]<-"7V"
++   newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="8"]<-"8V"
++   newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="9"]<-"9V"
++   newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="10"]<-"10V"
++ }
++ newBin$ViolentCrimesPerPop_numeric <- as.factor(newBin$ViolentCrimesPerPop_numeric)
++ newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="1"]<-"1A"
++ newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="2"]<-"2A"
++ newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="3"]<-"3A"
++ newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="4"]<-"4A"
++ newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="5"]<-"5A"
++ if(q == 2){
++   newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="6"]<-"6A"
++   newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="7"]<-"7A"
++   newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="8"]<-"8A"
++   newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="9"]<-"9A"
++   newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="10"]<-"10A"
++ }
++ newBin$race_percent_white_numeric <- as.factor(newBin$race_percent_white_numeric)
++ newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="1"]<-"1B"
++ newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="2"]<-"2B"
++ newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="3"]<-"3B"
++ newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="4"]<-"4B"
++ newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="5"]<-"5B"
++ if(q == 2) {
++   newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="6"]<-"6B"
++   newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="7"]<-"7B"
++   newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="8"]<-"8B"
++   newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="9"]<-"9B"
++   newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="10"]<-"10B"
++ }
++ newBin$percent_with_investment_income_numeric <- as.factor(newBin$percent_with_investment_income_numeric)
++ newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="1"]<-"1C"
++ newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="2"]<-"2C"
++ newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="3"]<-"3C"
++ newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="4"]<-"4C"
++ newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="5"]<-"5C"
++ if(q == 2){
++   newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="6"]<-"6C"
++   newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="7"]<-"7C"
++   newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="8"]<-"8C"
++   newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="9"]<-"9C"
++   newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="10"]<-"10C"
++ }
++ newBin$percent_not_high_school_grad_numeric <- as.factor(newBin$percent_not_high_school_grad_numeric)
++ newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="1"]<-"1D"
++ newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="2"]<-"2D"
++ newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="3"]<-"3D"
++ newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="4"]<-"4D"
++ newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="5"]<-"5D"
++ if(q == 2){
++   newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="6"]<-"6D"
++   newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="7"]<-"7D"
++   newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="8"]<-"8D"
++   newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="9"]<-"9D"
++   newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="10"]<-"10D"
++ }
++ newBin$total_percent_divorced_numeric <- as.factor(newBin$total_percent_divorced_numeric)
++ newBin[1:20,]
++ 
++ keeps <- c("ViolentCrimesPerPop_numeric","race_percent_white_numeric","percent_with_investment_income_numeric","percent_not_high_school_grad_numeric","total_percent_divorced_numeric")
++ keepNewBin = newBin[keeps]
++ keepNewBin[1:20,]
++ 
++ # Inspect the dataset
++ votingBaskets <- as(keepNewBin,"transactions")
++ print(summary(votingBaskets))
++ votingBaskets[1:2,]
++ # plot the data
++ itemFrequencyPlot(votingBaskets, support=0.1, cex.names=0.8)
++ itemFrequencyPlot(votingBaskets, support=0.01, cex.names=0.8)
++ 
++ 
++ ## Apriori Algorithm
++ # association rules
++ rules <- apriori(votingBaskets, parameter = list(support=0.1, confidence=0.6, minlen=2))
++ # subset of rules
++ rulesV1 <- subset(rules, subset=rhs%in%"ViolentCrimesPerPop_numeric=1V")
++ inspect(sort(rulesV1, by="confidence")[1:5])
++ rulesV1L <- subset(rules, subset=lhs%in%"ViolentCrimesPerPop_numeric=1V")
++ inspect(sort(rulesV1L, by="confidence")[1:5])
++ 
++ 
++ ## Eclat Algorithm
++ itemsets <- eclat(votingBaskets, parameter = list(sup=0.1, minlen=3, maxlen=15))
++ fsets <- eclat(votingBaskets, parameter=list(sup=0.1, minlen=3))
++ fsets.top5 <- sort(fsets)[1:5]
++ print(inspect(fsets.top5))
++ fsets.top10 <- sort(fsets)[1:10]
++ print(inspect(fsets.top10))
++ rulesV1E <- subset(itemsets, subset=items%in%"ViolentCrimesPerPop_numeric=1V")
++ print(inspect(sort(rulesV1E, by="support")[1:5]))
++ 
++ rules2 <- apriori(votingBaskets, parameter = list(support=0.1, confidence=0.6, minlen=3, maxlen=15))
++ rules2V1 <- subset(rules2, subset=rhs%in%"ViolentCrimesPerPop_numeric=1V")
++ inspect(sort(rules2V1, by="support")[1:5])
++ rules2V1L <- subset(rules2, subset=lhs%in%"ViolentCrimesPerPop_numeric=1V")
++ inspect(sort(rules2V1L, by="support")[1:5])
++ }
+[1] 0.2
+   [1] 1 4 3 1 1 1 1 3 3 1 2 1 1 1 2 2 3 1 1 1 2 4 2 4 2 1 5 1 3 1 1 1 1 2 1 2 1 2 1 1 1 1 4 2 1 1 1 1 1 1 1 4 2 1 1 2 2 2 3 1
+  [61] 1 1 1 3 2 1 4 1 3 1 1 2 1 1 1 1 1 4 4 4 2 2 5 1 1 1 1 1 2 1 4 1 1 1 2 2 3 1 1 1 2 1 2 2 1 3 2 1 2 2 3 1 1 1 3 1 5 1 1 4
+ [121] 2 1 1 1 1 1 1 1 4 1 2 1 1 2 1 1 1 1 2 1 1 1 2 1 1 3 5 1 4 5 2 5 1 2 5 3 1 4 3 1 1 1 1 1 1 2 1 1 3 3 2 1 1 1 4 1 1 5 1 2
+ [181] 1 2 2 1 1 2 1 1 1 1 1 2 1 1 1 1 1 3 2 3 1 1 2 4 1 1 2 1 1 1 2 1 4 1 2 3 1 1 1 1 1 2 2 1 1 1 4 1 4 3 1 1 1 5 1 1 2 1 2 1
+ [241] 1 1 2 3 1 2 4 2 5 1 4 4 1 1 1 5 1 1 1 1 3 3 4 1 1 1 2 1 1 4 1 2 2 2 1 2 2 1 1 1 1 1 1 2 1 1 3 1 3 1 1 1 1 2 1 1 4 1 2 2
+ [301] 1 1 2 2 1 3 2 2 1 1 1 1 1 3 1 2 2 2 1 1 3 1 1 2 2 2 1 1 1 2 1 2 1 5 3 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 1 1 1 2 1 1 1 1
+ [361] 3 2 5 1 1 3 2 1 1 1 3 1 1 1 3 5 1 1 2 2 3 1 1 1 3 2 2 3 3 1 1 1 2 3 1 1 2 1 1 4 5 2 1 2 4 2 1 4 3 2 5 1 2 5 1 1 1 1 2 1
+ [421] 5 4 1 4 1 1 1 4 4 3 1 3 1 1 1 1 1 1 1 2 1 2 1 1 4 1 4 5 1 1 4 1 1 1 4 1 1 5 1 1 3 1 5 2 2 1 2 1 1 1 2 1 4 3 2 2 1 2 1 2
+ [481] 2 2 4 1 1 2 1 1 1 1 1 2 1 1 2 2 1 1 1 5 1 2 1 1 2 4 1 1 2 1 1 2 1 2 2 1 1 1 1 1 1 1 3 2 1 4 2 1 3 1 1 1 3 1 1 1 1 1 1 5
+ [541] 1 1 1 1 2 5 1 1 1 2 1 1 3 2 1 3 1 2 2 1 5 1 1 2 5 1 2 3 2 2 1 1 1 1 1 1 1 1 1 1 1 1 2 1 1 1 3 3 1 1 3 5 1 1 1 1 1 2 2 1
+ [601] 5 2 2 1 3 2 1 1 3 1 3 1 2 1 2 5 1 1 1 1 2 1 1 1 2 1 1 1 1 1 5 5 1 2 1 1 1 3 1 1 2 5 4 1 1 2 1 1 3 1 1 1 1 1 1 1 2 1 1 3
+ [661] 2 1 2 4 1 2 2 5 2 5 2 1 1 4 2 5 5 1 5 1 2 2 3 2 2 1 1 4 3 1 1 3 4 2 2 4 1 1 3 3 3 1 1 1 1 2 3 1 2 1 1 4 1 1 2 1 2 1 1 1
+ [721] 1 1 2 5 1 1 5 2 1 2 1 3 4 1 1 2 1 1 2 1 2 2 3 1 1 2 1 1 1 1 1 1 1 1 1 1 1 2 2 1 1 2 1 1 1 1 2 2 1 2 3 1 2 1 2 2 5 3 1 3
+ [781] 2 4 1 4 1 1 3 1 1 1 1 3 1 2 1 2 1 1 1 1 1 2 1 3 2 1 1 1 2 1 5 2 1 1 1 1 1 1 2 1 1 2 1 1 1 1 1 2 5 2 1 1 1 1 1 2 4 1 1 1
+ [841] 2 5 2 3 1 3 2 2 1 1 1 1 1 1 2 4 1 3 5 2 1 1 2 1 2 1 5 4 1 4 3 2 1 1 2 1 2 2 1 1 1 1 1 3 1 1 2 1 1 2 1 1 1 1 1 1 2 2 3 2
+ [901] 1 1 3 1 1 1 3 1 1 5 1 1 1 1 1 1 1 3 1 1 3 1 2 1 2 1 2 1 2 2 1 3 1 1 1 1 1 1 1 1 1 1 1 1 1 4 1 4 1 1 2 1 4 4 2 5 1 5 2 2
+ [961] 2 3 1 1 1 1 3 1 2 2 4 1 2 4 1 1 4 2 2 1 1 1 2 1 1 1 2 1 1 1 1 2 3 1 1 2 1 1 5 1 1 5 1 1 3 1 4 1 3 1 1 2 2 1 2 2 1 1 1 1
+[1021] 1 1 1 1 1 5 2 1 2 3 1 1 1 1 1 1 1 2 1 3 1 5 1 1 5 1 1 1 1 1 1 3 3 3 2 2 5 2 2 2 2 1 1 1 2 1 1 2 1 2 1 2 1 3 1 1 1 1 1 1
+[1081] 1 2 1 2 1 2 1 1 1 1 2 2 1 4 1 2 3 1 1 2 1 1 2 1 1 1 1 1 2 1 1 1 1 1 1 1 3 1 1 5 1 1 1 1 1 4 1 1 1 2 1 1 1 1 5 2 2 1 1 1
+[1141] 2 1 3 1 2 2 4 1 1 3 1 3 1 2 5 1 2 2 1 5 2 1 2 1 1 2 2 1 1 3 3 3 2 1 1 2 1 1 1 1 4 1 4 3 1 2 1 3 1 1 1 1 3 1 1 2 4 1 1 1
+[1201] 5 1 1 1 2 1 1 4 5 1 1 4 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 2 1 2 1 1 2 1 1 2 1 3 1 1 2 1 1 1 3 1 2 1 1 1 3 2 1 2 1 1 2 3 2 1
+[1261] 1 3 5 1 1 2 1 1 1 2 5 2 1 5 5 2 1 1 1 3 1 1 1 2 1 3 3 3 1 1 2 1 5 1 1 5 2 1 1 2 2 2 1 2 1 1 3 3 1 1 3 1 4 3 1 1 1 1 1 1
+[1321] 2 2 1 1 2 2 5 1 1 2 1 3 1 2 1 1 1 1 2 1 1 3 1 1 1 1 1 1 1 1 3 2 1 5 1 1 1 2 1 1 3 1 2 1 5 1 2 1 1 1 2 1 2 2 1 1 3 1 3 2
+[1381] 2 1 3 1 1 1 1 1 1 2 1 1 5 2 1 1 1 3 1 1 1 1 2 1 2 1 1 1 1 1 2 1 1 3 1 1 1 2 1 1 3 4 1 1 1 1 1 1 3 1 1 3 3 1 1 2 4 1 2 1
+[1441] 1 3 1 1 3 2 2 1 1 1 3 3 2 1 1 1 2 2 1 2 1 1 1 1 1 2 2 2 1 3 1 1 2 1 1 2 1 3 1 3 2 4 1 1 1 1 5 3 1 1 1 1 2 1 2 1 1 1 1 1
+[1501] 1 2 4 1 1 2 3 2 4 2 1 2 2 2 2 1 1 1 2 1 1 1 1 2 5 1 2 2 2 1 1 1 3 1 2 1 3 2 2 2 1 2 2 2 4 1 1 1 1 1 1 1 1 1 4 2 2 2 1 1
+[1561] 2 1 1 5 2 1 2 3 1 3 3 1 1 2 2 1 1 1 1 1 3 1 4 1 2 1 1 1 1 1 2 1 1 1 2 5 1 3 2 1 1 3 1 1 1 1 1 4 1 1 5 1 5 1 1 1 1 2 1 2
+[1621] 1 1 1 3 2 3 2 1 2 1 1 1 2 4 1 1 5 1 1 1 4 2 1 1 1 1 1 2 1 2 1 2 1 1 1 3 1 1 1 1 1 3 2 4 3 1 1 1 1 2 3 2 1 1 1 1 2 3 2 1
+[1681] 1 1 1 2 5 1 4 1 1 2 2 2 1 1 1 2 1 1 3 2 3 1 1 3 1 1 1 2 1 2 2 2 1 1 1 1 1 1 2 2 1 5 1 1 1 1 2 3 2 2 1 1 2 1 1 1 1 1 1 1
+[1741] 1 1 1 1 1 1 1 3 1 4 1 2 1 3 3 1 2 1 2 5 1 1 1 1 2 1 1 4 1 1 2 1 1 4 1 5 1 3 3 1 1 1 1 3 1 1 1 2 2 3 3 1 3 1 1 1 1 1 1 1
+[1801] 1 4 1 2 1 3 1 1 2 1 4 3 1 3 1 4 1 3 1 2 2 2 2 3 1 1 1 1 1 1 1 5 1 1 1 4 5 1 3 1 1 1 2 3 1 1 1 5 1 3 1 2 2 1 1 1 1 1 1 2
+[1861] 2 1 2 1 1 5 1 1 1 1 2 1 3 1 2 2 1 1 5 1 2 1 1 1 2 1 2 2 1 1 1 2 1 2 1 1 1 1 1 1 3 1 1 2 1 1 1 3 1 2 4 1 1 2 3 1 4 1 2 2
+[1921] 1 1 2 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 1 1 1 2 1 2 1 1 3 1 2 5 2 1 1 1 2 3 3 4 2 1 1 4 3 2 2 1 3 1 1 2 1 1
+[1981] 2 1 1 3 1 1 1 1 1 1 3 2 1 3
+[1] 0.2
+   [1] 5 4 3 1 5 3 5 3 5 5 1 5 5 5 5 5 4 5 5 5 4 3 5 5 1 5 1 5 4 5 5 5 4 3 3 5 4 4 4 4 5 5 1 5 5 5 4 4 5 5 5 3 4 5 5 4 4 5 3 5
+  [61] 5 4 5 4 3 5 4 5 2 5 5 5 5 5 5 5 4 2 4 4 4 5 4 5 5 5 5 5 5 5 4 4 5 5 5 5 5 5 5 5 3 5 5 4 5 3 5 5 4 4 4 5 5 3 4 4 1 5 5 4
+ [121] 5 4 5 4 5 5 5 3 2 5 2 5 4 4 5 5 5 4 4 5 4 5 2 5 4 4 2 5 3 4 4 2 5 5 2 1 5 1 5 5 5 5 5 5 5 4 5 5 3 5 5 5 5 4 4 4 5 2 5 4
+ [181] 4 5 3 5 5 3 5 5 5 5 4 5 5 5 5 5 5 1 5 3 4 5 5 2 5 5 3 5 5 4 2 5 4 5 5 5 4 5 3 5 5 3 3 5 5 4 4 5 2 2 5 5 5 2 5 3 2 5 5 5
+ [241] 5 5 4 3 4 5 3 5 2 5 3 4 5 4 5 3 5 5 5 5 5 4 1 5 5 5 2 5 5 5 5 5 5 4 5 2 2 5 5 5 5 5 5 5 4 3 3 5 4 5 5 4 5 4 5 5 2 5 4 5
+ [301] 5 5 4 4 5 5 3 5 5 5 5 5 5 4 4 4 2 1 5 5 5 5 5 2 4 3 5 5 4 1 5 5 5 1 3 5 5 5 4 5 5 5 4 5 5 5 4 5 5 5 5 5 5 5 5 5 5 5 5 5
+ [361] 4 3 1 5 5 4 4 2 4 5 3 4 5 5 3 4 5 5 2 4 4 5 5 5 3 3 3 4 3 5 3 4 3 4 5 5 4 5 4 4 4 3 4 3 3 2 5 4 2 4 2 4 4 1 5 5 5 5 5 4
+ [421] 2 5 5 5 5 5 5 3 4 4 5 2 5 2 5 5 5 5 3 5 5 4 5 5 3 5 3 1 5 5 1 5 4 5 3 5 5 3 5 5 2 5 1 5 5 5 4 4 4 5 5 5 3 4 2 5 4 1 5 4
+ [481] 5 5 4 4 5 3 5 5 5 5 5 1 5 5 2 4 4 5 5 2 5 5 5 5 4 4 4 5 3 5 5 5 5 5 5 5 4 5 4 5 5 5 4 3 5 4 1 5 2 5 5 5 4 4 5 5 5 4 5 2
+ [541] 5 4 5 5 4 2 5 5 5 5 5 5 1 4 4 1 5 4 4 4 1 5 5 4 2 5 5 4 4 5 3 5 5 4 5 4 5 5 5 5 5 5 5 5 5 5 1 4 5 5 3 1 5 5 5 5 3 5 4 3
+ [601] 2 3 5 4 3 5 4 5 5 5 4 5 5 5 5 5 5 5 2 4 3 5 5 5 3 5 5 5 4 5 1 1 5 1 5 5 4 4 5 5 2 1 5 5 5 5 4 5 3 5 5 4 5 5 5 5 5 4 3 5
+ [661] 4 5 3 3 5 5 4 1 1 3 4 5 5 4 4 2 3 5 3 5 1 5 2 4 4 5 5 1 4 4 5 2 1 1 4 2 5 5 4 1 2 5 5 5 5 4 4 4 4 5 5 4 5 4 5 2 4 5 5 5
+ [721] 5 5 5 2 5 5 1 1 5 3 5 4 3 5 5 2 5 5 5 5 3 5 2 4 5 3 5 5 5 5 3 4 5 5 5 5 5 4 3 5 4 5 5 4 5 5 3 5 5 3 3 5 3 5 5 5 1 5 5 5
+ [781] 1 2 5 1 4 4 4 5 5 5 3 2 5 5 5 5 5 5 5 4 5 3 5 3 3 5 5 5 4 5 2 3 5 5 3 4 5 5 5 3 5 2 5 5 5 5 5 5 1 4 5 5 5 5 5 3 4 5 5 5
+ [841] 5 2 3 4 5 2 4 4 5 5 4 5 5 5 4 2 4 2 4 4 5 3 4 5 2 5 2 4 4 3 2 3 5 5 4 5 3 4 5 5 5 5 5 3 5 3 2 5 5 5 5 5 5 5 5 5 4 5 4 5
+ [901] 5 5 5 5 5 5 3 4 5 3 5 5 5 5 5 5 5 1 5 5 4 5 5 5 3 5 4 5 5 4 5 3 5 5 5 5 4 5 5 5 5 4 5 5 3 2 2 3 4 4 5 5 1 3 5 1 5 5 5 2
+ [961] 4 3 5 5 5 4 2 5 5 4 2 5 5 1 4 5 1 4 3 5 5 5 5 5 5 5 1 5 5 5 5 2 4 5 4 3 5 5 1 5 5 2 5 5 2 1 2 5 5 4 5 2 3 5 3 4 5 5 3 5
+[1021] 3 5 5 5 5 2 5 5 4 4 3 5 5 5 3 5 5 5 5 3 4 3 5 5 1 5 5 5 5 5 5 4 2 5 5 4 1 5 3 5 3 5 5 4 4 3 5 4 5 5 5 5 5 2 5 5 5 5 3 5
+[1081] 5 5 5 5 5 4 5 4 5 5 4 3 5 1 5 3 5 5 5 3 5 5 5 4 4 5 4 5 3 5 5 5 5 5 5 5 4 4 5 1 3 5 5 5 4 2 3 4 4 5 4 5 5 5 3 5 4 5 3 5
+[1141] 5 5 4 5 4 5 1 5 5 2 5 5 5 5 1 5 4 5 5 1 2 5 5 5 2 3 4 5 5 2 5 1 5 5 5 5 5 5 5 5 4 4 2 3 5 4 5 3 5 5 5 5 3 5 4 5 1 5 5 5
+[1201] 3 5 5 5 5 5 5 3 1 5 4 4 5 5 5 5 3 4 5 5 3 5 5 4 5 5 5 5 5 5 5 5 5 5 5 5 4 3 5 4 3 5 5 5 3 5 4 4 5 5 3 5 5 2 5 5 5 3 4 5
+[1261] 4 2 1 4 5 4 5 5 5 3 1 4 4 1 2 4 5 5 5 4 4 4 4 4 4 2 5 4 5 4 4 5 2 5 5 2 4 5 5 3 4 4 5 3 5 5 4 3 5 5 3 5 5 4 5 5 4 5 5 5
+[1321] 4 4 5 5 5 5 4 5 5 3 5 5 5 4 5 5 5 5 4 5 5 4 5 5 5 4 5 5 5 5 1 3 5 5 1 5 5 5 1 5 4 4 5 5 1 5 4 3 5 2 2 5 2 3 5 5 2 5 1 2
+[1381] 1 5 4 5 2 5 4 5 5 4 5 5 3 3 5 5 2 2 5 5 5 4 1 5 3 5 5 5 5 3 5 5 5 1 5 5 4 5 3 5 5 5 5 5 5 5 4 3 3 5 5 3 3 5 5 5 2 4 3 5
+[1441] 5 3 5 4 4 3 4 5 5 4 2 3 4 5 5 5 1 2 5 4 5 5 5 5 5 4 5 3 5 3 4 5 3 5 5 4 5 2 4 3 4 1 4 5 5 5 1 4 5 5 4 4 2 5 4 5 4 3 5 4
+[1501] 4 5 4 5 5 4 3 5 2 2 5 4 4 5 3 5 5 5 5 5 5 5 5 3 2 5 5 4 5 5 5 5 4 5 3 5 2 4 3 4 4 3 4 1 4 5 5 4 5 5 4 5 5 5 4 5 5 3 5 5
+[1561] 4 5 5 3 4 4 4 4 5 1 4 5 5 5 4 3 4 5 5 5 2 5 2 5 4 4 5 5 5 4 4 2 5 5 4 2 5 5 3 5 5 1 4 5 5 5 5 3 2 5 3 5 2 5 5 4 5 3 5 3
+[1621] 5 5 5 4 4 3 4 5 3 5 5 5 5 3 5 5 3 4 5 5 2 3 5 5 3 5 5 3 5 4 4 4 5 5 5 5 5 5 5 5 4 3 2 5 4 3 5 5 5 2 2 4 5 5 4 5 3 3 2 5
+[1681] 5 5 5 1 1 5 5 5 5 4 2 3 3 4 5 4 5 5 3 3 4 5 4 3 5 5 5 2 5 3 3 4 4 5 5 5 4 5 2 4 3 3 5 5 4 5 3 4 4 4 5 5 3 5 5 5 5 4 5 5
+[1741] 5 4 4 5 5 5 5 4 5 4 4 3 4 5 4 5 5 5 5 1 5 5 5 5 5 5 5 3 5 5 3 5 5 3 4 3 5 2 2 4 5 5 5 3 2 5 5 5 4 2 3 5 4 5 4 4 5 5 5 5
+[1801] 5 3 5 5 5 5 5 5 2 5 2 5 5 3 5 2 5 3 5 4 5 3 1 5 5 5 5 5 4 4 3 4 5 5 5 1 1 4 4 4 4 3 1 4 5 5 5 1 5 1 5 5 5 5 5 5 5 5 5 4
+[1861] 5 4 4 5 5 3 5 5 5 5 3 5 2 5 5 4 4 5 3 1 4 5 5 4 3 5 4 3 5 4 5 4 5 5 5 5 5 5 5 5 4 5 4 5 5 5 4 3 5 5 2 5 5 5 5 5 3 5 4 4
+[1921] 3 2 4 4 5 2 5 5 4 5 5 5 5 5 5 5 5 5 4 5 4 3 5 5 5 5 3 5 5 4 5 5 4 5 3 5 4 3 4 4 5 2 3 3 1 4 4 5 3 2 4 4 4 5 3 5 5 5 5 4
+[1981] 5 5 5 4 5 3 5 5 2 5 2 4 5 3
+[1] 0.2
+   [1] 3 3 2 3 4 4 4 2 2 5 3 4 5 4 3 3 3 4 4 3 2 2 3 3 1 3 2 3 2 4 3 3 3 3 4 3 3 3 2 4 3 3 1 4 4 3 2 2 3 3 3 2 3 4 2 2 3 3 3 3
+  [61] 4 3 3 2 2 4 2 4 2 3 5 3 4 4 3 3 2 2 2 3 3 3 2 4 3 3 3 4 3 3 3 3 4 3 3 3 3 4 4 3 2 3 3 2 3 1 4 4 2 2 3 4 3 3 2 5 1 4 4 3
+ [121] 3 4 4 3 4 3 4 3 2 3 2 3 2 3 4 4 4 3 2 5 3 3 1 3 2 2 2 2 2 2 3 2 3 4 2 2 5 2 3 3 3 4 3 4 4 3 4 3 2 3 2 3 3 1 2 4 4 2 3 3
+ [181] 2 2 2 5 4 3 3 4 4 3 3 3 3 2 3 4 3 2 2 2 2 4 2 2 3 3 4 3 4 4 3 3 2 4 3 3 2 2 2 3 4 3 2 4 4 2 2 3 2 3 3 3 3 3 3 2 2 4 3 3
+ [241] 4 3 3 1 2 3 2 3 2 3 3 3 4 4 4 1 2 4 3 1 3 3 2 4 3 4 2 3 3 3 3 3 3 2 2 2 1 4 3 3 3 3 3 3 3 2 3 5 3 3 3 4 4 3 3 3 2 4 2 2
+ [301] 3 2 2 2 3 4 2 2 4 5 3 3 3 2 4 2 2 2 3 2 2 3 3 2 3 1 3 3 2 3 3 3 5 2 2 5 3 4 3 3 3 4 4 3 3 3 4 3 4 4 4 3 3 3 3 3 3 4 3 3
+ [361] 3 3 2 3 3 3 3 2 3 4 2 3 4 3 2 5 5 2 3 3 2 3 5 3 2 3 2 2 2 4 5 3 2 2 4 3 1 3 3 3 2 3 2 1 2 1 3 1 2 4 2 2 3 2 2 3 3 3 3 3
+ [421] 2 3 4 2 4 2 4 2 3 3 3 3 5 2 3 4 3 4 3 3 3 2 2 3 2 3 2 2 5 4 1 4 2 2 2 3 3 2 2 4 2 4 1 3 3 3 4 4 3 3 3 3 2 3 2 2 3 3 4 2
+ [481] 3 3 2 2 4 3 4 3 2 3 4 2 5 4 2 2 4 2 3 2 3 2 4 4 2 2 2 3 2 3 2 3 3 3 4 4 3 2 2 3 3 3 2 2 3 3 1 2 2 3 4 3 2 3 3 2 4 3 3 2
+ [541] 3 3 4 4 2 1 3 3 4 3 4 3 2 4 4 2 3 3 3 4 2 3 4 2 2 3 2 3 2 2 3 4 3 4 4 4 4 4 3 3 3 5 3 3 4 4 2 1 3 3 2 2 5 4 4 3 4 3 2 2
+ [601] 2 3 3 5 2 3 2 3 3 5 3 2 3 3 2 3 4 3 2 5 2 4 3 3 2 3 3 3 3 5 1 2 3 1 2 4 2 2 4 3 2 2 2 4 4 2 1 5 2 2 3 3 4 4 3 3 2 5 4 3
+ [661] 1 4 3 2 3 3 2 2 1 2 2 3 2 2 2 2 2 3 2 5 1 2 2 3 3 4 3 1 3 5 3 2 1 2 2 2 5 2 2 1 1 3 2 4 4 4 3 2 4 4 4 2 3 3 2 4 3 3 3 4
+ [721] 3 4 4 2 4 5 1 2 3 3 3 4 2 2 3 2 3 5 3 4 3 2 2 2 5 3 3 3 3 4 2 3 2 4 3 3 3 3 2 4 2 3 3 3 4 3 3 4 2 2 2 4 2 3 3 3 1 3 3 2
+ [781] 3 2 3 2 4 3 4 3 5 4 3 2 4 4 3 3 4 3 3 5 4 3 3 2 2 3 3 3 3 3 2 2 4 3 2 4 3 4 4 2 4 2 2 3 4 5 3 4 2 2 3 4 3 4 4 2 2 3 5 4
+ [841] 2 2 3 3 3 2 2 2 3 5 4 4 3 4 2 2 3 2 2 1 4 2 2 3 1 2 2 3 2 3 2 2 3 4 2 4 2 4 3 3 3 3 4 2 3 3 2 5 5 3 4 4 4 3 3 4 2 3 2 2
+ [901] 4 4 4 3 4 3 2 4 4 2 5 2 4 3 3 4 5 1 3 4 3 5 3 4 2 2 4 2 3 3 4 2 4 4 4 4 3 5 3 3 3 2 3 5 2 2 3 2 2 4 3 3 2 3 3 1 2 3 3 2
+ [961] 3 2 3 4 5 2 2 3 2 2 2 4 3 2 4 3 1 1 2 3 3 3 2 3 3 4 3 4 4 3 3 2 2 3 5 2 3 3 1 3 4 2 3 3 2 3 2 4 3 3 4 1 3 5 4 3 3 3 4 5
+[1021] 2 2 3 4 3 2 3 5 3 2 2 3 5 3 2 4 5 3 3 2 2 3 4 5 2 4 4 4 4 3 4 2 2 2 3 3 2 4 3 3 3 5 4 2 2 1 4 3 4 3 5 2 3 2 4 2 4 2 4 2
+[1081] 3 3 4 3 3 2 4 4 4 4 3 2 2 2 2 2 3 4 2 2 4 5 3 2 2 3 3 3 2 4 3 4 5 4 5 2 2 2 3 1 3 4 3 3 5 1 4 5 3 3 3 4 3 4 1 2 3 4 3 4
+[1141] 3 4 2 3 3 3 1 3 5 2 4 2 3 2 1 4 2 3 5 2 2 3 4 5 2 2 2 4 3 2 2 1 4 5 5 3 4 4 3 4 3 3 2 1 5 2 4 2 3 2 3 3 2 4 3 4 2 3 4 2
+[1201] 3 5 3 4 4 3 3 1 2 4 3 3 3 3 5 2 3 2 5 4 2 5 2 3 3 3 4 4 4 2 2 3 3 3 4 3 3 2 4 2 2 3 4 3 3 4 3 3 5 3 2 4 2 2 4 5 2 1 2 3
+[1261] 4 2 2 4 5 2 4 3 4 2 2 2 4 2 2 3 4 3 3 3 3 4 3 2 5 2 3 3 3 2 2 2 2 2 3 2 3 5 3 2 2 2 5 2 4 3 3 2 3 4 1 3 2 2 4 3 3 3 5 3
+[1321] 2 2 4 2 3 4 1 2 3 2 4 3 4 2 4 3 3 4 3 3 3 2 4 3 3 4 3 4 3 3 2 2 3 2 2 4 5 3 2 2 2 2 2 4 1 3 4 2 4 3 2 4 2 2 3 3 2 2 2 2
+[1381] 2 5 2 3 3 3 3 4 3 2 3 4 2 2 3 5 3 2 2 3 4 3 1 3 2 4 3 3 4 4 3 4 3 1 4 3 4 4 4 4 2 2 3 3 3 3 4 2 2 5 4 2 4 5 5 4 2 4 2 4
+[1441] 3 2 4 3 2 4 2 4 5 3 2 2 3 2 4 3 1 3 4 3 4 3 4 5 4 5 3 4 4 2 1 3 2 3 4 3 3 2 4 1 2 2 3 4 3 4 2 3 3 4 5 3 2 4 2 5 3 2 3 3
+[1501] 5 2 3 3 3 2 1 3 2 2 3 3 3 3 3 5 4 3 3 5 4 3 4 2 2 3 3 2 3 3 4 4 2 4 2 3 2 2 2 3 3 3 3 2 3 3 3 3 4 3 4 2 3 3 2 3 3 3 2 3
+[1561] 2 4 4 2 3 3 2 2 3 2 2 3 4 2 2 2 2 3 4 4 2 5 2 3 3 2 3 3 3 3 2 3 4 5 3 2 3 2 3 3 3 1 2 2 3 3 4 1 2 4 2 4 1 3 4 5 4 4 5 2
+[1621] 2 3 5 2 2 3 3 4 2 4 3 5 3 2 4 4 2 3 5 3 2 2 5 3 2 3 4 2 4 2 4 2 4 2 3 2 5 3 4 4 4 3 2 3 2 2 3 5 5 1 3 2 4 3 2 3 3 2 1 5
+[1681] 3 4 3 3 2 3 3 4 4 2 2 1 2 3 4 3 4 4 3 2 2 3 3 2 3 4 2 2 4 3 1 2 4 5 4 2 3 3 2 2 2 2 3 3 3 4 2 2 2 2 3 3 2 2 3 3 4 3 4 3
+[1741] 4 3 3 3 3 4 5 2 3 3 2 2 4 3 3 3 4 3 4 2 5 4 4 3 3 4 5 4 3 3 1 3 3 2 2 2 3 2 2 3 3 3 4 2 3 4 4 2 2 3 2 3 3 4 4 4 3 3 5 2
+[1801] 2 2 4 2 3 3 3 3 3 2 2 3 3 2 3 2 5 2 4 3 3 4 1 3 4 3 4 4 4 2 2 3 5 3 3 2 1 2 2 3 2 2 2 2 4 3 3 1 3 1 3 5 3 3 3 2 3 3 3 3
+[1861] 3 3 2 3 4 2 2 3 4 3 2 4 2 3 3 3 3 2 2 1 3 4 3 3 4 4 3 2 3 2 3 3 3 2 3 3 4 4 3 3 3 2 2 3 3 4 3 2 3 2 2 4 3 3 3 4 1 3 2 3
+[1921] 1 2 3 4 4 1 4 3 3 3 4 3 4 4 4 3 4 3 3 3 3 3 2 2 4 2 3 4 5 3 3 3 4 3 3 4 2 3 2 2 3 3 2 3 2 3 3 4 4 3 2 3 3 3 2 4 4 3 4 3
+[1981] 2 4 5 2 4 2 4 3 2 4 2 3 3 2
+[1] 0.2
+   [1] 1 2 3 2 2 1 3 5 3 1 2 1 1 2 1 2 2 1 2 2 3 2 3 2 5 1 3 3 3 2 4 2 1 3 1 3 2 4 3 1 3 3 3 1 2 1 3 4 1 3 3 2 3 1 4 4 1 3 2 3
+  [61] 2 3 2 3 4 1 4 1 5 2 1 2 1 1 3 2 2 4 3 1 3 3 4 1 2 3 2 2 3 3 2 2 1 2 1 2 2 1 2 3 2 3 3 3 2 4 1 1 4 2 3 3 1 2 3 1 3 2 2 1
+ [121] 2 1 2 1 2 3 1 2 5 2 3 2 3 2 3 2 1 1 4 1 2 2 4 1 2 3 2 3 3 3 3 2 2 3 3 4 1 4 2 2 2 2 1 2 2 2 1 3 3 3 3 2 3 4 3 2 1 3 2 1
+ [181] 3 3 4 1 2 2 1 1 1 2 3 2 1 2 1 2 1 3 2 4 2 2 4 4 3 1 1 2 1 1 2 2 2 2 2 3 2 2 4 2 3 2 4 2 2 3 4 4 4 2 2 2 3 3 2 4 2 2 2 2
+ [241] 1 4 3 5 3 2 3 3 3 2 2 3 1 2 1 3 4 3 3 5 3 3 3 1 3 2 3 3 2 2 2 3 2 3 2 2 4 2 3 2 2 1 3 2 3 3 3 1 3 3 4 2 1 3 2 2 3 1 4 2
+ [301] 2 4 3 4 2 1 3 4 1 1 3 2 3 3 2 3 4 5 3 2 3 3 3 2 2 5 3 2 3 3 2 2 1 4 3 1 1 1 3 1 2 2 1 2 2 2 2 2 2 1 2 2 2 2 1 3 2 2 3 2
+ [361] 2 2 3 2 2 3 3 5 1 2 3 2 2 2 3 1 1 2 2 2 4 2 1 2 4 4 3 3 2 1 1 1 2 3 1 2 5 3 3 3 3 3 3 5 4 4 2 4 3 1 4 3 4 4 2 3 3 4 1 3
+ [421] 3 3 3 4 2 3 1 4 3 2 3 2 2 3 2 3 3 2 2 2 2 3 4 2 3 3 3 3 1 1 4 3 4 3 3 2 2 4 4 1 5 1 5 2 2 3 1 2 3 3 2 1 4 3 4 3 3 3 2 4
+ [481] 3 1 3 2 1 2 1 2 4 3 1 4 1 2 4 4 2 3 3 3 2 3 2 1 2 3 3 1 4 3 2 3 3 2 2 1 3 3 3 2 2 3 2 4 3 2 4 3 5 3 2 2 3 2 4 2 2 2 3 3
+ [541] 2 1 2 1 5 4 4 2 1 3 1 3 3 2 1 4 3 2 1 1 3 2 2 3 3 2 3 2 3 3 1 1 3 2 3 1 2 1 2 3 2 2 3 3 1 2 3 5 2 1 3 3 1 2 2 3 2 2 3 3
+ [601] 3 2 2 1 3 2 3 3 3 1 2 3 2 2 2 2 2 2 4 1 4 2 2 1 3 2 3 2 3 2 4 4 3 4 5 1 5 3 1 2 5 4 3 1 1 3 5 2 3 3 3 1 1 2 2 2 4 1 1 3
+ [661] 5 1 2 3 3 1 3 3 5 3 3 2 2 5 3 3 3 1 4 1 2 2 4 2 2 2 2 5 3 1 2 3 4 4 4 3 1 3 3 5 3 2 3 2 1 1 3 4 1 1 2 3 1 3 4 2 2 1 3 2
+ [721] 1 1 1 3 3 1 5 4 3 2 2 2 4 4 2 4 2 1 2 1 2 2 4 3 1 1 3 2 2 1 5 2 3 2 2 2 2 1 3 1 3 2 2 2 3 2 3 2 3 4 3 1 3 3 3 3 3 3 2 5
+ [781] 3 3 3 3 2 2 2 3 1 2 3 4 1 1 2 2 2 2 3 1 1 2 2 4 4 1 2 2 1 1 4 2 1 3 3 2 3 2 3 3 1 3 3 1 1 1 1 1 2 3 2 2 3 2 1 2 3 1 1 2
+ [841] 2 3 2 3 3 4 4 2 2 1 1 2 2 1 4 4 1 4 3 4 3 5 3 2 5 4 4 2 2 2 3 4 1 1 2 1 4 1 2 3 2 2 1 3 3 2 2 2 1 1 1 1 1 2 2 1 2 3 4 4
+ [901] 2 2 2 1 1 2 2 2 2 2 1 2 2 2 1 1 1 3 2 1 2 1 3 2 4 2 1 3 3 2 2 3 1 2 1 1 2 1 2 2 2 3 1 1 2 3 1 2 1 1 2 4 3 2 4 5 4 2 3 3
+ [961] 4 3 2 2 1 2 3 1 2 4 4 1 3 3 3 2 3 5 4 3 2 3 4 2 3 2 2 1 1 3 3 3 3 3 1 4 2 2 5 2 2 3 2 2 2 1 3 2 2 1 1 5 3 1 1 3 2 2 1 1
+[1021] 4 3 1 2 2 4 2 1 1 4 3 2 3 2 4 2 1 2 2 4 4 3 3 1 3 2 2 1 2 4 1 3 3 5 2 2 3 2 3 2 2 1 1 3 4 5 1 2 2 2 2 2 2 5 1 3 1 3 1 3
+[1081] 3 2 1 3 1 3 1 1 2 1 2 4 3 3 3 4 3 1 3 3 2 1 2 3 3 3 1 2 3 2 3 1 1 2 1 2 3 2 2 4 2 1 1 1 1 4 2 1 2 3 2 1 4 2 5 3 2 2 2 2
+[1141] 4 2 3 2 2 2 5 2 1 5 1 5 3 4 4 1 3 3 1 3 5 2 2 1 2 3 3 2 3 2 5 5 1 1 1 2 2 2 1 1 3 1 3 5 1 2 1 5 2 3 3 2 4 2 3 2 3 2 2 3
+[1201] 2 1 2 1 1 2 2 4 3 1 2 2 2 2 1 1 2 3 1 2 2 1 3 2 2 3 3 2 2 3 3 2 2 4 3 4 2 3 1 3 2 2 1 2 3 1 2 2 2 1 2 1 2 3 1 1 2 3 3 2
+[1261] 1 4 3 2 1 2 1 2 1 3 4 3 2 4 4 3 2 3 1 2 1 1 3 4 1 3 3 2 3 3 3 3 3 4 3 3 3 1 1 3 3 4 1 4 2 3 2 3 2 2 5 2 4 2 2 3 2 1 1 2
+[1321] 3 3 1 2 3 1 4 2 3 3 1 3 2 2 2 2 2 1 3 1 2 2 3 3 2 1 2 3 2 2 5 4 2 3 3 2 1 2 2 3 2 4 5 1 5 2 2 4 2 2 4 2 4 2 2 3 3 3 3 4
+[1381] 4 1 3 2 1 3 2 2 3 3 1 3 3 3 2 1 2 2 3 3 1 2 5 2 3 1 2 1 2 1 2 2 3 5 1 2 1 3 2 1 3 3 2 3 3 2 1 4 3 1 2 4 3 1 1 2 3 1 4 3
+[1441] 2 3 1 2 3 1 3 1 2 4 3 4 1 3 1 1 4 3 1 2 2 2 1 1 1 1 2 2 2 3 5 2 5 3 1 3 3 4 2 4 4 3 2 2 3 1 3 2 2 1 1 2 4 2 5 1 1 4 2 2
+[1501] 1 3 2 1 3 3 5 2 3 3 2 3 3 2 2 2 2 2 3 1 1 2 2 2 4 2 2 2 2 1 2 1 2 1 3 3 3 3 3 3 3 2 2 3 2 2 2 2 3 1 2 4 2 2 3 2 3 2 3 1
+[1561] 2 3 1 3 3 2 3 2 2 4 4 1 3 3 3 2 2 2 2 2 5 1 3 1 2 5 3 3 3 1 3 2 2 2 3 3 1 3 1 2 2 4 2 2 3 2 2 5 1 1 3 3 5 1 1 1 2 2 1 4
+[1621] 3 2 1 3 2 2 4 1 4 1 3 1 2 3 2 2 4 2 2 1 4 3 1 2 2 2 2 3 2 2 2 2 2 4 2 3 1 2 2 1 1 2 3 1 3 3 2 1 1 5 2 3 2 2 1 2 3 3 4 1
+[1681] 2 2 2 1 4 2 2 1 1 1 5 4 3 1 1 1 1 2 3 3 3 2 1 3 2 2 3 4 2 2 5 2 2 1 1 2 1 3 4 4 2 3 2 1 2 2 4 3 2 4 1 2 3 3 1 2 1 2 2 1
+[1741] 1 2 2 2 1 2 1 2 2 3 3 2 1 2 2 2 2 1 2 2 2 2 2 2 3 2 1 1 2 2 5 3 3 3 3 3 2 3 4 2 2 2 2 2 1 2 2 3 3 2 3 1 3 2 1 1 3 2 1 2
+[1801] 3 3 2 4 2 2 2 1 2 2 3 3 3 4 2 4 1 3 2 3 2 1 4 3 1 2 2 1 1 2 4 3 2 2 2 4 4 3 2 3 3 3 4 2 1 3 2 5 2 4 2 1 3 2 2 3 4 2 2 3
+[1861] 2 2 3 2 1 2 3 3 2 2 4 2 2 3 2 2 2 4 4 4 3 2 1 1 2 1 2 3 3 4 2 1 2 3 2 3 2 1 2 1 3 3 2 2 1 3 2 3 2 4 4 1 2 2 3 2 5 3 4 3
+[1921] 5 2 2 1 1 4 2 1 2 2 1 4 1 2 3 2 4 4 2 3 2 2 3 3 1 3 3 1 1 2 3 1 1 3 2 2 3 2 2 1 2 1 3 3 3 2 2 1 3 2 3 3 2 2 4 1 1 3 2 2
+[1981] 3 2 2 4 1 4 2 3 4 1 2 3 2 3
+[1] 0.2
+   [1] 4 5 4 3 2 3 2 3 4 2 3 2 1 2 4 3 3 2 3 2 4 4 4 3 2 4 4 3 4 2 3 4 1 3 3 4 2 2 3 3 2 3 4 4 1 3 3 3 4 3 4 3 2 2 4 4 4 4 3 2
+  [61] 2 4 3 4 3 3 4 2 3 3 1 3 2 2 3 3 4 4 4 4 2 4 3 1 1 3 3 3 4 3 4 2 2 3 4 2 5 1 2 3 3 3 4 4 2 4 2 2 3 4 3 2 2 4 5 1 4 1 3 5
+ [121] 4 2 1 3 3 2 3 3 3 3 4 3 4 2 2 2 1 5 3 2 2 3 4 2 4 3 3 3 4 4 3 4 2 2 5 3 2 4 4 3 2 3 2 2 2 3 1 3 3 4 3 2 3 3 3 2 2 3 4 4
+ [181] 4 3 3 1 3 3 3 2 2 2 3 3 1 2 1 2 3 4 4 4 3 2 4 2 3 4 3 3 2 1 4 2 5 2 2 4 3 2 4 3 2 3 4 2 3 3 4 3 3 4 3 2 4 3 2 3 2 2 2 5
+ [241] 2 4 3 3 4 4 4 4 4 2 4 4 2 3 1 4 4 2 3 2 4 4 4 2 2 3 4 4 1 4 2 4 5 4 2 3 4 2 3 2 2 3 2 5 2 4 4 1 3 2 2 2 1 3 3 2 4 1 2 5
+ [301] 3 4 3 4 4 3 4 4 2 2 3 3 2 4 3 3 4 3 2 5 3 3 3 3 4 2 3 3 2 3 3 4 1 5 3 1 1 2 3 2 2 2 1 2 3 3 4 3 2 1 2 3 2 3 1 3 2 2 4 2
+ [361] 3 3 4 3 4 4 3 3 1 2 4 4 3 2 4 2 2 3 3 3 4 2 2 3 3 2 2 3 3 2 1 2 3 4 1 3 3 3 4 3 4 4 4 3 3 4 3 5 4 4 4 3 4 4 2 2 3 2 2 3
+ [421] 4 3 2 5 2 4 2 4 3 3 2 4 2 4 3 2 3 3 3 5 3 3 4 3 5 3 3 4 1 2 4 2 4 4 4 2 3 4 3 2 4 1 3 3 4 4 2 2 2 3 5 2 4 4 4 4 4 2 2 4
+ [481] 3 3 4 4 1 4 3 3 4 3 1 4 1 1 4 3 3 4 2 4 2 3 2 2 4 4 4 4 4 3 3 3 4 4 3 2 2 3 3 3 3 3 4 3 3 4 4 4 3 3 2 3 4 3 2 4 2 3 2 4
+ [541] 3 3 3 2 4 3 2 2 3 3 2 3 3 3 3 4 3 4 4 3 5 3 2 3 3 2 3 3 4 4 2 3 3 2 2 2 3 1 3 2 2 1 3 4 2 2 4 2 2 2 4 5 1 2 2 3 3 3 4 2
+ [601] 3 4 4 3 5 3 3 3 3 1 3 4 4 3 5 4 2 3 4 2 3 2 3 2 4 4 2 3 3 2 5 4 4 4 3 3 2 3 3 3 2 4 3 2 1 3 2 1 4 3 1 3 2 2 4 2 4 2 3 3
+ [661] 3 2 3 4 4 4 3 5 3 3 5 2 2 4 4 4 4 4 5 1 5 5 3 3 4 2 3 2 4 3 3 4 3 5 4 4 1 4 4 2 4 4 4 2 4 3 3 4 3 2 2 4 2 3 3 3 4 3 3 2
+ [721] 3 3 5 4 3 1 4 5 3 4 3 3 5 4 2 4 3 1 4 2 4 3 4 3 2 4 2 2 2 3 2 4 4 2 2 4 2 3 3 2 2 4 2 5 3 2 3 3 3 4 4 1 4 2 3 4 5 4 4 4
+ [781] 3 4 3 4 2 3 3 2 2 1 4 4 2 3 4 3 2 4 2 4 2 3 3 3 3 4 4 3 4 1 5 3 4 2 4 2 3 2 1 2 2 3 3 3 2 2 3 4 4 3 3 2 2 1 3 3 3 3 2 2
+ [841] 4 5 3 3 4 3 4 3 3 2 2 2 3 2 3 4 3 4 5 3 2 3 4 2 2 4 3 5 4 3 3 3 2 2 5 3 3 2 3 2 3 3 3 4 4 3 3 2 1 4 2 2 2 1 2 3 2 4 3 4
+ [901] 2 2 3 2 2 3 4 2 2 4 1 3 3 3 2 3 2 3 3 4 4 2 2 2 3 4 4 3 3 3 2 4 4 1 3 2 3 2 3 3 3 4 3 2 3 4 1 3 2 3 2 4 2 4 2 5 3 4 3 4
+ [961] 4 3 2 2 1 3 4 3 4 4 5 2 3 4 2 2 5 4 3 4 4 3 4 3 2 2 3 2 2 2 3 4 4 3 1 4 3 3 3 2 3 4 4 3 4 2 5 2 3 3 2 3 4 1 4 3 3 3 4 2
+[1021] 3 4 3 2 3 4 3 1 2 3 4 2 1 4 5 1 1 3 3 4 4 4 2 2 4 2 2 3 2 3 2 4 4 5 4 4 4 3 4 4 3 2 3 4 3 3 2 4 3 4 2 5 3 3 3 4 2 3 3 3
+[1081] 3 2 1 3 2 3 3 2 3 1 4 3 3 4 3 4 3 3 4 4 2 1 2 4 3 4 3 3 3 2 2 2 2 2 2 3 4 3 3 4 3 2 3 3 2 4 4 1 4 3 3 4 2 2 5 3 3 2 3 4
+[1141] 3 2 4 3 3 3 3 3 1 4 3 3 4 3 4 2 4 3 2 4 2 4 3 1 3 5 3 3 3 3 4 2 4 2 2 4 2 1 3 2 4 3 4 3 2 3 1 2 2 4 3 4 4 2 3 2 5 2 2 3
+[1201] 3 2 4 1 3 2 4 3 4 2 2 5 3 2 2 2 4 4 1 3 4 2 3 3 4 2 2 3 1 4 3 2 3 3 2 3 2 4 3 4 4 2 1 2 3 2 3 3 1 2 4 4 2 3 3 1 3 3 3 4
+[1261] 2 4 4 3 2 4 2 4 2 4 4 4 2 4 3 3 2 2 4 5 3 2 4 4 2 4 3 4 3 2 4 4 3 4 3 4 3 1 2 4 4 4 1 2 3 3 4 4 3 2 3 2 5 4 2 2 3 3 2 4
+[1321] 4 3 3 2 3 5 4 4 2 2 2 3 3 4 3 3 3 2 4 3 4 5 2 2 3 3 3 2 3 2 2 4 3 5 4 2 2 3 3 4 3 3 3 2 5 3 3 3 3 3 4 1 3 3 3 3 3 3 4 4
+[1381] 3 2 3 2 2 3 4 1 4 4 2 2 4 4 3 2 3 3 3 3 1 2 2 3 3 1 2 2 1 2 4 3 3 2 3 4 2 2 2 3 4 3 3 3 3 3 2 3 4 1 2 3 3 1 1 3 4 2 3 2
+[1441] 3 4 4 3 3 3 3 2 2 3 4 3 2 4 3 3 2 2 2 4 2 2 2 2 2 4 3 4 1 4 2 4 2 3 2 3 3 3 2 3 3 4 4 2 2 2 4 4 4 2 1 3 4 2 4 5 3 3 3 3
+[1501] 1 4 4 2 4 3 3 4 4 4 4 3 3 3 3 2 3 3 3 1 1 2 2 2 4 3 4 3 3 3 2 2 3 4 3 2 4 3 4 3 3 3 3 5 4 3 2 4 2 4 2 4 3 3 4 2 3 3 3 2
+[1561] 3 1 3 5 3 3 3 4 4 3 3 2 3 5 4 3 3 3 3 2 4 2 3 2 4 2 2 3 3 3 4 3 3 1 2 3 2 4 4 2 2 4 3 5 3 4 3 3 3 2 4 1 3 3 1 2 1 4 1 3
+[1621] 3 3 2 4 5 5 3 2 3 1 3 2 3 4 2 1 4 3 2 3 3 4 1 3 3 2 2 4 2 4 2 3 2 3 4 3 1 3 3 3 2 4 3 3 4 2 2 1 2 3 4 3 1 3 2 1 3 4 4 2
+[1681] 4 3 1 2 4 3 3 2 2 3 3 3 3 3 2 4 2 2 5 3 3 3 3 4 2 1 3 3 3 3 2 5 2 2 4 3 3 4 4 3 4 5 3 3 4 1 3 4 3 2 3 3 3 4 2 3 3 3 3 4
+[1741] 2 4 3 2 2 1 2 4 2 4 3 4 2 4 3 3 4 2 1 5 2 2 2 3 4 3 2 3 1 4 2 4 3 5 4 4 2 4 3 2 2 2 2 2 2 2 2 5 3 3 4 2 3 2 2 3 4 2 4 3
+[1801] 4 4 2 4 3 3 4 2 3 3 2 4 3 3 1 4 1 4 2 4 4 3 4 3 2 4 2 2 3 3 2 4 1 3 2 3 5 3 4 3 4 5 4 4 1 3 3 4 3 4 3 2 4 2 3 4 4 1 3 3
+[1861] 4 2 3 2 2 5 4 3 2 2 3 2 3 3 3 3 3 3 4 4 2 2 2 4 4 2 3 4 3 2 3 3 2 3 2 2 2 2 3 1 3 4 3 5 4 2 2 4 4 3 3 2 3 3 4 1 2 4 3 3
+[1921] 4 3 4 3 3 3 3 3 4 4 1 2 1 2 2 3 1 2 3 3 4 4 4 4 3 4 3 4 1 4 2 3 3 3 4 2 3 4 3 2 2 3 3 3 3 4 4 1 4 3 3 3 3 3 3 4 2 3 2 3
+[1981] 3 2 2 5 2 3 2 2 4 3 3 3 2 3
+transactions as itemMatrix in sparse format with
+ 1994 rows (elements/itemsets/transactions) and
+ 25 columns (items) and a density of 0.2 
+
+most frequent items:
+           ViolentCrimesPerPop_numeric=1V             race_percent_white_numeric=5A percent_with_investment_income_numeric=3B 
+                                     1188                                      1128                                       795 
+        total_percent_divorced_numeric=3D   percent_not_high_school_grad_numeric=2C                                   (Other) 
+                                      741                                       732                                      5386 
+
+element (itemset/transaction) length distribution:
+sizes
+   5 
+1994 
+
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+      5       5       5       5       5       5 
+
+includes extended item information - examples:
+                          labels                   variables levels
+1 ViolentCrimesPerPop_numeric=1V ViolentCrimesPerPop_numeric     1V
+2 ViolentCrimesPerPop_numeric=2V ViolentCrimesPerPop_numeric     2V
+3 ViolentCrimesPerPop_numeric=3V ViolentCrimesPerPop_numeric     3V
+
+includes extended transaction information - examples:
+  transactionID
+1             1
+2             2
+3             3
+Apriori
+
+Parameter specification:
+ confidence minval smax arem  aval originalSupport support minlen maxlen target   ext
+        0.6    0.1    1 none FALSE            TRUE     0.1      2     10  rules FALSE
+
+Algorithmic control:
+ filter tree heap memopt load sort verbose
+    0.1 TRUE TRUE  FALSE TRUE    2    TRUE
+
+Absolute minimum support count: 199 
+
+set item appearances ...[0 item(s)] done [0.00s].
+set transactions ...[25 item(s), 1994 transaction(s)] done [0.00s].
+sorting and recoding items ... [15 item(s)] done [0.00s].
+creating transaction tree ... done [0.00s].
+checking subsets of size 1 2 3 4 done [0.00s].
+writing ... [43 rule(s)] done [0.00s].
+creating S4 object  ... done [0.00s].
+  lhs                                            rhs                                support confidence     lift
+1 {race_percent_white_numeric=5A,                                                                              
+   percent_with_investment_income_numeric=4B,                                                                  
+   total_percent_divorced_numeric=2D}         => {ViolentCrimesPerPop_numeric=1V} 0.1003009  0.9803922 1.645540
+2 {percent_with_investment_income_numeric=4B,                                                                  
+   total_percent_divorced_numeric=2D}         => {ViolentCrimesPerPop_numeric=1V} 0.1138415  0.9742489 1.635229
+3 {race_percent_white_numeric=5A,                                                                              
+   total_percent_divorced_numeric=2D}         => {ViolentCrimesPerPop_numeric=1V} 0.2021063  0.9641148 1.618220
+4 {percent_not_high_school_grad_numeric=2C,                                                                    
+   total_percent_divorced_numeric=2D}         => {ViolentCrimesPerPop_numeric=1V} 0.1048144  0.9414414 1.580163
+5 {race_percent_white_numeric=5A,                                                                              
+   percent_not_high_school_grad_numeric=1C}   => {ViolentCrimesPerPop_numeric=1V} 0.1529589  0.9413580 1.580023
+  lhs                                            rhs                               support confidence     lift
+1 {ViolentCrimesPerPop_numeric=1V,                                                                            
+   percent_with_investment_income_numeric=4B,                                                                 
+   total_percent_divorced_numeric=2D}         => {race_percent_white_numeric=5A} 0.1003009  0.8810573 1.557472
+2 {ViolentCrimesPerPop_numeric=1V,                                                                            
+   percent_with_investment_income_numeric=4B} => {race_percent_white_numeric=5A} 0.1670010  0.8671875 1.532954
+3 {ViolentCrimesPerPop_numeric=1V,                                                                            
+   total_percent_divorced_numeric=2D}         => {race_percent_white_numeric=5A} 0.2021063  0.8611111 1.522212
+4 {ViolentCrimesPerPop_numeric=1V,                                                                            
+   percent_with_investment_income_numeric=3B,                                                                 
+   percent_not_high_school_grad_numeric=2C}   => {race_percent_white_numeric=5A} 0.1198596  0.8298611 1.466971
+5 {ViolentCrimesPerPop_numeric=1V,                                                                            
+   percent_with_investment_income_numeric=3B} => {race_percent_white_numeric=5A} 0.2216650  0.8292683 1.465923
+Eclat
+
+parameter specification:
+ tidLists support minlen maxlen            target   ext
+    FALSE     0.1      3     15 frequent itemsets FALSE
+
+algorithmic control:
+ sparse sort verbose
+      7   -2    TRUE
+
+Absolute minimum support count: 199 
+
+create itemset ... 
+set transactions ...[25 item(s), 1994 transaction(s)] done [0.00s].
+sorting and recoding items ... [15 item(s)] done [0.00s].
+creating bit matrix ... [15 row(s), 1994 column(s)] done [0.00s].
+writing  ... [18 set(s)] done [0.00s].
+Creating S4 object  ... done [0.00s].
+Eclat
+
+parameter specification:
+ tidLists support minlen maxlen            target   ext
+    FALSE     0.1      3     10 frequent itemsets FALSE
+
+algorithmic control:
+ sparse sort verbose
+      7   -2    TRUE
+
+Absolute minimum support count: 199 
+
+create itemset ... 
+set transactions ...[25 item(s), 1994 transaction(s)] done [0.00s].
+sorting and recoding items ... [15 item(s)] done [0.00s].
+creating bit matrix ... [15 row(s), 1994 column(s)] done [0.00s].
+writing  ... [18 set(s)] done [0.00s].
+Creating S4 object  ... done [0.00s].
+  items                                         support
+1 {ViolentCrimesPerPop_numeric=1V,                     
+   race_percent_white_numeric=5A,                      
+   percent_with_investment_income_numeric=3B} 0.2216650
+2 {ViolentCrimesPerPop_numeric=1V,                     
+   race_percent_white_numeric=5A,                      
+   percent_not_high_school_grad_numeric=2C}   0.2121364
+3 {ViolentCrimesPerPop_numeric=1V,                     
+   race_percent_white_numeric=5A,                      
+   total_percent_divorced_numeric=2D}         0.2021063
+4 {ViolentCrimesPerPop_numeric=1V,                     
+   race_percent_white_numeric=5A,                      
+   percent_with_investment_income_numeric=4B} 0.1670010
+5 {ViolentCrimesPerPop_numeric=1V,                     
+   race_percent_white_numeric=5A,                      
+   total_percent_divorced_numeric=3D}         0.1554664
+NULL
+   items                                         support
+1  {ViolentCrimesPerPop_numeric=1V,                     
+    race_percent_white_numeric=5A,                      
+    percent_with_investment_income_numeric=3B} 0.2216650
+2  {ViolentCrimesPerPop_numeric=1V,                     
+    race_percent_white_numeric=5A,                      
+    percent_not_high_school_grad_numeric=2C}   0.2121364
+3  {ViolentCrimesPerPop_numeric=1V,                     
+    race_percent_white_numeric=5A,                      
+    total_percent_divorced_numeric=2D}         0.2021063
+4  {ViolentCrimesPerPop_numeric=1V,                     
+    race_percent_white_numeric=5A,                      
+    percent_with_investment_income_numeric=4B} 0.1670010
+5  {ViolentCrimesPerPop_numeric=1V,                     
+    race_percent_white_numeric=5A,                      
+    total_percent_divorced_numeric=3D}         0.1554664
+6  {ViolentCrimesPerPop_numeric=1V,                     
+    race_percent_white_numeric=5A,                      
+    percent_not_high_school_grad_numeric=1C}   0.1529589
+7  {race_percent_white_numeric=5A,                      
+    percent_with_investment_income_numeric=3B,          
+    percent_not_high_school_grad_numeric=2C}   0.1489468
+8  {ViolentCrimesPerPop_numeric=1V,                     
+    percent_with_investment_income_numeric=3B,          
+    percent_not_high_school_grad_numeric=2C}   0.1444333
+9  {ViolentCrimesPerPop_numeric=1V,                     
+    percent_with_investment_income_numeric=3B,          
+    total_percent_divorced_numeric=3D}         0.1313942
+10 {race_percent_white_numeric=5A,                      
+    percent_with_investment_income_numeric=3B,          
+    total_percent_divorced_numeric=3D}         0.1308927
+NULL
+  items                                         support
+1 {ViolentCrimesPerPop_numeric=1V,                     
+   race_percent_white_numeric=5A,                      
+   percent_with_investment_income_numeric=3B} 0.2216650
+2 {ViolentCrimesPerPop_numeric=1V,                     
+   race_percent_white_numeric=5A,                      
+   percent_not_high_school_grad_numeric=2C}   0.2121364
+3 {ViolentCrimesPerPop_numeric=1V,                     
+   race_percent_white_numeric=5A,                      
+   total_percent_divorced_numeric=2D}         0.2021063
+4 {ViolentCrimesPerPop_numeric=1V,                     
+   race_percent_white_numeric=5A,                      
+   percent_with_investment_income_numeric=4B} 0.1670010
+5 {ViolentCrimesPerPop_numeric=1V,                     
+   race_percent_white_numeric=5A,                      
+   total_percent_divorced_numeric=3D}         0.1554664
+NULL
+Apriori
+
+Parameter specification:
+ confidence minval smax arem  aval originalSupport support minlen maxlen target   ext
+        0.6    0.1    1 none FALSE            TRUE     0.1      3     15  rules FALSE
+
+Algorithmic control:
+ filter tree heap memopt load sort verbose
+    0.1 TRUE TRUE  FALSE TRUE    2    TRUE
+
+Absolute minimum support count: 199 
+
+set item appearances ...[0 item(s)] done [0.00s].
+set transactions ...[25 item(s), 1994 transaction(s)] done [0.00s].
+sorting and recoding items ... [15 item(s)] done [0.00s].
+creating transaction tree ... done [0.00s].
+checking subsets of size 1 2 3 4 done [0.00s].
+writing ... [31 rule(s)] done [0.00s].
+creating S4 object  ... done [0.00s].
+  lhs                                            rhs                                support confidence     lift
+1 {race_percent_white_numeric=5A,                                                                              
+   percent_with_investment_income_numeric=3B} => {ViolentCrimesPerPop_numeric=1V} 0.2216650  0.7992767 1.341547
+2 {race_percent_white_numeric=5A,                                                                              
+   percent_not_high_school_grad_numeric=2C}   => {ViolentCrimesPerPop_numeric=1V} 0.2121364  0.8460000 1.419970
+3 {race_percent_white_numeric=5A,                                                                              
+   total_percent_divorced_numeric=2D}         => {ViolentCrimesPerPop_numeric=1V} 0.2021063  0.9641148 1.618220
+4 {race_percent_white_numeric=5A,                                                                              
+   percent_with_investment_income_numeric=4B} => {ViolentCrimesPerPop_numeric=1V} 0.1670010  0.9353933 1.570012
+5 {race_percent_white_numeric=5A,                                                                              
+   total_percent_divorced_numeric=3D}         => {ViolentCrimesPerPop_numeric=1V} 0.1554664  0.7969152 1.337583
+  lhs                                            rhs                               support confidence     lift
+1 {ViolentCrimesPerPop_numeric=1V,                                                                            
+   percent_with_investment_income_numeric=3B} => {race_percent_white_numeric=5A} 0.2216650  0.8292683 1.465923
+2 {ViolentCrimesPerPop_numeric=1V,                                                                            
+   percent_not_high_school_grad_numeric=2C}   => {race_percent_white_numeric=5A} 0.2121364  0.8261719 1.460449
+3 {ViolentCrimesPerPop_numeric=1V,                                                                            
+   total_percent_divorced_numeric=2D}         => {race_percent_white_numeric=5A} 0.2021063  0.8611111 1.522212
+4 {ViolentCrimesPerPop_numeric=1V,                                                                            
+   percent_with_investment_income_numeric=4B} => {race_percent_white_numeric=5A} 0.1670010  0.8671875 1.532954
+5 {ViolentCrimesPerPop_numeric=1V,                                                                            
+   total_percent_divorced_numeric=3D}         => {race_percent_white_numeric=5A} 0.1554664  0.7380952 1.304753
+> 

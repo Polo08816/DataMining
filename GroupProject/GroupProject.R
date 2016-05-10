@@ -195,23 +195,23 @@ for(m in 1:2) {
 
     ### Regression Analysis
   nonall_crime<-crimeData$ViolentCrimesPerPop_numeric[!is.na(crimeData$ViolentCrimesPerPop_numeric) & !is.na(crimeData$race_percent_white_numeric) & !is.na(crimeData$percent_with_investment_income_numeric) & !is.na(crimeData$percent_not_high_school_grad_numeric) & !is.na(crimeData$total_percent_divorced_numeric)]
-  length(nonaall_crime)
+  length(nonall_crime)
   nonall_percent_white<-crimeData$race_percent_white_numeric[!is.na(crimeData$ViolentCrimesPerPop_numeric) & !is.na(crimeData$race_percent_white_numeric) & !is.na(crimeData$percent_with_investment_income_numeric) & !is.na(crimeData$percent_not_high_school_grad_numeric) & !is.na(crimeData$total_percent_divorced_numeric)]
-  length(nonaall_percent_white)
+  length(nonall_percent_white)
   nonall_investment<-crimeData$percent_with_investment_income_numeric[!is.na(crimeData$ViolentCrimesPerPop_numeric) & !is.na(crimeData$race_percent_white_numeric) & !is.na(crimeData$percent_with_investment_income_numeric) & !is.na(crimeData$percent_not_high_school_grad_numeric) & !is.na(crimeData$total_percent_divorced_numeric)]
-  length(nonaall_investment)
+  length(nonall_investment)
   nonall_not_high_school<-crimeData$percent_not_high_school_grad_numeric[!is.na(crimeData$ViolentCrimesPerPop_numeric) & !is.na(crimeData$race_percent_white_numeric) & !is.na(crimeData$percent_with_investment_income_numeric) & !is.na(crimeData$percent_not_high_school_grad_numeric) & !is.na(crimeData$total_percent_divorced_numeric)]
-  length(nonaall_not_high_school)
+  length(nonall_not_high_school)
   nonall_divorce<-crimeData$total_percent_divorced_numeric[!is.na(crimeData$ViolentCrimesPerPop_numeric) & !is.na(crimeData$race_percent_white_numeric) & !is.na(crimeData$percent_with_investment_income_numeric) & !is.na(crimeData$percent_not_high_school_grad_numeric) & !is.na(crimeData$total_percent_divorced_numeric)]
-  length(nonaall_divorce)
+  length(nonall_divorce)
   
-  fit.percent_white<-lm(nonaall_crime ~ nonall_percent_white)
+  fit.percent_white<-lm(nonall_crime ~ nonall_percent_white)
   summary(fit.percent_white)
-  fit.investment<-lm(nonaall_crime ~ nonall_investment)
+  fit.investment<-lm(nonall_crime ~ nonall_investment)
   summary(fit.investment)
-  fit.high_school<-lm(nonaall_crime ~ nonall_not_high_school)
+  fit.high_school<-lm(nonall_crime ~ nonall_not_high_school)
   summary(fit.high_school)
-  fit.divorce<-lm(nonaall_crime ~ nonall_divorce)
+  fit.divorce<-lm(nonall_crime ~ nonall_divorce)
   summary(fit.divorce)
   
   hypothesis<-cbind(nonall_crime,
@@ -339,7 +339,7 @@ keepNewBin[1:20,]
 
 # Inspect the dataset
 votingBaskets <- as(keepNewBin,"transactions")
-summary(votingBaskets)
+print(summary(votingBaskets))
 votingBaskets[1:2,]
 # plot the data
 itemFrequencyPlot(votingBaskets, support=0.1, cex.names=0.8)
@@ -360,11 +360,11 @@ inspect(sort(rulesV1L, by="confidence")[1:5])
 itemsets <- eclat(votingBaskets, parameter = list(sup=0.1, minlen=3, maxlen=15))
 fsets <- eclat(votingBaskets, parameter=list(sup=0.1, minlen=3))
 fsets.top5 <- sort(fsets)[1:5]
-inspect(fsets.top5)
+print(inspect(fsets.top5))
 fsets.top10 <- sort(fsets)[1:10]
-inspect(fsets.top10)
+print(inspect(fsets.top10))
 rulesV1E <- subset(itemsets, subset=items%in%"ViolentCrimesPerPop_numeric=1V")
-inspect(sort(rulesV1E, by="support")[1:5])
+print(inspect(sort(rulesV1E, by="support")[1:5]))
 
 rules2 <- apriori(votingBaskets, parameter = list(support=0.1, confidence=0.6, minlen=3, maxlen=15))
 rules2V1 <- subset(rules2, subset=rhs%in%"ViolentCrimesPerPop_numeric=1V")
