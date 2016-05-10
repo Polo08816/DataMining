@@ -120,33 +120,31 @@ for(m in 1:2) {
   print(crimeData_pred)
   print(table(crimeData_pred, testData$ViolentCrimesPerPop_numeric))
   
-  classifier <- naiveBayes(ViolentCrimesPerPop_numeric ~ race_percent_white_numeric + percent_with_investment_income_numeric + percent_not_high_school_grad_numeric + total_percent_divorced_numeric, data = trainData, method = "class")
-  print(classifier)
-  pred <- predict(classifier, testData[,-5])
-  print(table(pred))
-  print(table(testData$ViolentCrimesPerPop_numeric))
+  #classifier <- naiveBayes(ViolentCrimesPerPop_numeric ~ race_percent_white_numeric + percent_with_investment_income_numeric + percent_not_high_school_grad_numeric + total_percent_divorced_numeric, data = trainData, method = "class")
+  #print(classifier)
+  #pred <- predict(classifier, testData[,-5])
+  #print(table(pred))
+  #print(table(testData$ViolentCrimesPerPop_numeric))
   #print(table(pred,testData$ViolentCrimesPerPop_numeric))
-  length(pred)
-  length(testData$ViolentCrimesPerPop_numeric)
+  #length(pred)
+  #length(testData$ViolentCrimesPerPop_numeric)
   
   # fit <- randomForest(class ~ balanceData, data = trainData)
-  fit <- randomForest(ViolentCrimesPerPop_numeric ~ race_percent_white_numeric + percent_with_investment_income_numeric + percent_not_high_school_grad_numeric + total_percent_divorced_numeric, data = trainData, method = "class")
-  print(fit)
-  print(importance(fit))
-
+  #fit <- randomForest(ViolentCrimesPerPop_numeric ~ race_percent_white_numeric + percent_with_investment_income_numeric + percent_not_high_school_grad_numeric + total_percent_divorced_numeric, data = trainData, method = "class")
+  #print(fit)
+  #print(importance(fit))
 }
 
 
-# Bin for frequent itemsets
-numBins <- 1
+# 5 Bin for frequent itemsets
+for(q in 1:1) {
 
-newBin <- crimeData
-newBin$ViolentCrimesPerPop_numeric <- binningFunct(numBins, crimeData$ViolentCrimesPerPop_numeric, newBin$ViolentCrimesPerPop_numeric)
-newBin$race_percent_white_numeric <- binningFunct(numBins, crimeData$race_percent_white_numeric, newBin$race_percent_white_numeric)
-newBin$percent_with_investment_income_numeric <- binningFunct(numBins, crimeData$percent_with_investment_income_numeric, newBin$percent_with_investment_income_numeric)
-newBin$percent_not_high_school_grad_numeric <- binningFunct(numBins, crimeData$percent_not_high_school_grad_numeric, newBin$percent_not_high_school_grad_numeric)
-newBin$total_percent_divorced_numeric <- binningFunct(numBins, crimeData$total_percent_divorced_numeric, newBin$total_percent_divorced_numeric)
-
+  newBin <- crimeData
+  newBin$ViolentCrimesPerPop_numeric <- binningFunct(q, crimeData$ViolentCrimesPerPop_numeric, newBin$ViolentCrimesPerPop_numeric)
+  newBin$race_percent_white_numeric <- binningFunct(q, crimeData$race_percent_white_numeric, newBin$race_percent_white_numeric)
+  newBin$percent_with_investment_income_numeric <- binningFunct(q, crimeData$percent_with_investment_income_numeric, newBin$percent_with_investment_income_numeric)
+  newBin$percent_not_high_school_grad_numeric <- binningFunct(q, crimeData$percent_not_high_school_grad_numeric, newBin$percent_not_high_school_grad_numeric)
+  newBin$total_percent_divorced_numeric <- binningFunct(q, crimeData$total_percent_divorced_numeric, newBin$total_percent_divorced_numeric)
 
 # Frequent itemsets pre-processing
 newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="1"]<-"1V"
@@ -154,30 +152,65 @@ newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="2"]<-"2V
 newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="3"]<-"3V"
 newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="4"]<-"4V"
 newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="5"]<-"5V"
+if(q == 2) {
+  newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="6"]<-"6V"
+  newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="7"]<-"7V"
+  newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="8"]<-"8V"
+  newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="9"]<-"9V"
+  newBin$ViolentCrimesPerPop_numeric[newBin$ViolentCrimesPerPop_numeric=="10"]<-"10V"
+}
 newBin$ViolentCrimesPerPop_numeric <- as.factor(newBin$ViolentCrimesPerPop_numeric)
 newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="1"]<-"1A"
 newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="2"]<-"2A"
 newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="3"]<-"3A"
 newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="4"]<-"4A"
 newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="5"]<-"5A"
+if(q == 2){
+  newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="6"]<-"6A"
+  newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="7"]<-"7A"
+  newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="8"]<-"8A"
+  newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="9"]<-"9A"
+  newBin$race_percent_white_numeric[newBin$race_percent_white_numeric=="10"]<-"10A"
+}
 newBin$race_percent_white_numeric <- as.factor(newBin$race_percent_white_numeric)
 newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="1"]<-"1B"
 newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="2"]<-"2B"
 newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="3"]<-"3B"
 newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="4"]<-"4B"
 newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="5"]<-"5B"
+if(q == 2) {
+  newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="6"]<-"6B"
+  newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="7"]<-"7B"
+  newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="8"]<-"8B"
+  newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="9"]<-"9B"
+  newBin$percent_with_investment_income_numeric[newBin$percent_with_investment_income_numeric=="10"]<-"10B"
+}
 newBin$percent_with_investment_income_numeric <- as.factor(newBin$percent_with_investment_income_numeric)
 newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="1"]<-"1C"
 newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="2"]<-"2C"
 newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="3"]<-"3C"
 newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="4"]<-"4C"
 newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="5"]<-"5C"
+if(q == 2){
+  newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="6"]<-"6C"
+  newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="7"]<-"7C"
+  newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="8"]<-"8C"
+  newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="9"]<-"9C"
+  newBin$percent_not_high_school_grad_numeric[newBin$percent_not_high_school_grad_numeric=="10"]<-"10C"
+}
 newBin$percent_not_high_school_grad_numeric <- as.factor(newBin$percent_not_high_school_grad_numeric)
 newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="1"]<-"1D"
 newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="2"]<-"2D"
 newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="3"]<-"3D"
 newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="4"]<-"4D"
 newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="5"]<-"5D"
+if(q == 2){
+  newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="6"]<-"6D"
+  newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="7"]<-"7D"
+  newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="8"]<-"8D"
+  newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="9"]<-"9D"
+  newBin$total_percent_divorced_numeric[newBin$total_percent_divorced_numeric=="10"]<-"10D"
+}
 newBin$total_percent_divorced_numeric <- as.factor(newBin$total_percent_divorced_numeric)
 newBin[1:20,]
 
@@ -219,7 +252,7 @@ rules2V1 <- subset(rules2, subset=rhs%in%"ViolentCrimesPerPop_numeric=1V")
 inspect(sort(rules2V1, by="support")[1:5])
 rules2V1L <- subset(rules2, subset=lhs%in%"ViolentCrimesPerPop_numeric=1V")
 inspect(sort(rules2V1L, by="support")[1:5])
-
+}
 
 
 
