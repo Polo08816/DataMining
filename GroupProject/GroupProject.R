@@ -103,11 +103,12 @@ for(m in 1:2) {
   whichbinViolentCrimes <- crimeData
   whichbinViolentCrimes$ViolentCrimesPerPop_numeric <- binningFunct(m, crimeData$ViolentCrimesPerPop_numeric, whichbinViolentCrimes$ViolentCrimesPerPop_numeric)
 
+  n.size<- length(crimeData$ViolentCrimesPerPop_numeric)
   set.seed(1234)
   ind <- sample(2, n.size, replace=TRUE,
                 prob=c(0.7,0.3))
-  trainData <- whichbin[ind==1, ]
-  testData <- whichbin[ind==2,]
+  trainData <- whichbinViolentCrimes[ind==1, ]
+  testData <- whichbinViolentCrimes[ind==2,]
   
   # classification
   crimeData_rpart <- rpart(ViolentCrimesPerPop_numeric ~ race_percent_white_numeric + percent_with_investment_income_numeric + percent_not_high_school_grad_numeric + total_percent_divorced_numeric, data = trainData, method = "class")
