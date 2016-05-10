@@ -98,6 +98,65 @@ pairs(~crimeData$ViolentCrimesPerPop_numeric+
         crimeData$percent_not_high_school_grad_numeric+
         crimeData$total_percent_divorced_numeric)
 
+#Scatterplots
+plot(crimeData$race_percent_white_numeric,
+     crimeData$ViolentCrimesPerPop_numeric,
+     xlim = c(0,1),
+     ylim = c(0,1),
+     xlab = "Race Percent White",
+     ylab = "Violent Crimes Per Population",
+     main = "Scatterplot of VCPP by RPW",
+     type = "p",
+     pch = 16,
+     col = "green")
+points(crimeData$race_percent_white_numeric,
+       crimeData$ViolentCrimesPerPop_numeric,
+       type = "p",
+       col = "black")
+plot(crimeData$percent_with_investment_income_numeric,
+     crimeData$ViolentCrimesPerPop_numeric,
+     xlim = c(0,1),
+     ylim = c(0,1),
+     xlab = "Percent with Investment Incomce",
+     ylab = "Violent Crimes Per Population",
+     main = "Scatterplot of VCPP by PwII",
+     type = "p",
+     pch = 16,
+     col = "green")
+points(crimeData$percent_with_investment_income_numeric,
+       crimeData$ViolentCrimesPerPop_numeric,
+       type = "p",
+       col = "black")
+plot(crimeData$percent_not_high_school_grad_numeric,
+     crimeData$ViolentCrimesPerPop_numeric,
+     xlim = c(0,1),
+     ylim = c(0,1),
+     xlab = "Percent Not High School Graduates",
+     ylab = "Violent Crimes Per Population",
+     main = "Scatterplot of VCPP by PNHSG",
+     type = "p",
+     pch = 16,
+     col = "green")
+points(crimeData$percent_not_high_school_grad_numeric,
+       crimeData$ViolentCrimesPerPop_numeric,
+       type = "p",
+       col = "black")
+plot(crimeData$total_percent_divorced_numeric,
+     crimeData$ViolentCrimesPerPop_numeric,
+     xlim = c(0,1),
+     ylim = c(0,1),
+     xlab = "Total Percent Divorced",
+     ylab = "Violent Crimes Per Population",
+     main = "Scatterplot of VCPP by TPD",
+     type = "p",
+     pch = 16,
+     col = "green")
+points(crimeData$total_percent_divorced_numeric,
+       crimeData$ViolentCrimesPerPop_numeric,
+       type = "p",
+       col = "black")
+
+
 # 5/10 bins (number is off for some reason) for ViolentCrimesPerPop
 for(m in 1:2) {
   whichbinViolentCrimes <- crimeData
@@ -133,6 +192,66 @@ for(m in 1:2) {
   #fit <- randomForest(ViolentCrimesPerPop_numeric ~ race_percent_white_numeric + percent_with_investment_income_numeric + percent_not_high_school_grad_numeric + total_percent_divorced_numeric, data = trainData, method = "class")
   #print(fit)
   #print(importance(fit))
+
+    ### Regression Analysis
+  nonall_crime<-crimeData$ViolentCrimesPerPop_numeric[!is.na(crimeData$ViolentCrimesPerPop_numeric) & !is.na(crimeData$race_percent_white_numeric) & !is.na(crimeData$percent_with_investment_income_numeric) & !is.na(crimeData$percent_not_high_school_grad_numeric) & !is.na(crimeData$total_percent_divorced_numeric)]
+  length(nonaall_crime)
+  nonall_percent_white<-crimeData$race_percent_white_numeric[!is.na(crimeData$ViolentCrimesPerPop_numeric) & !is.na(crimeData$race_percent_white_numeric) & !is.na(crimeData$percent_with_investment_income_numeric) & !is.na(crimeData$percent_not_high_school_grad_numeric) & !is.na(crimeData$total_percent_divorced_numeric)]
+  length(nonaall_percent_white)
+  nonall_investment<-crimeData$percent_with_investment_income_numeric[!is.na(crimeData$ViolentCrimesPerPop_numeric) & !is.na(crimeData$race_percent_white_numeric) & !is.na(crimeData$percent_with_investment_income_numeric) & !is.na(crimeData$percent_not_high_school_grad_numeric) & !is.na(crimeData$total_percent_divorced_numeric)]
+  length(nonaall_investment)
+  nonall_not_high_school<-crimeData$percent_not_high_school_grad_numeric[!is.na(crimeData$ViolentCrimesPerPop_numeric) & !is.na(crimeData$race_percent_white_numeric) & !is.na(crimeData$percent_with_investment_income_numeric) & !is.na(crimeData$percent_not_high_school_grad_numeric) & !is.na(crimeData$total_percent_divorced_numeric)]
+  length(nonaall_not_high_school)
+  nonall_divorce<-crimeData$total_percent_divorced_numeric[!is.na(crimeData$ViolentCrimesPerPop_numeric) & !is.na(crimeData$race_percent_white_numeric) & !is.na(crimeData$percent_with_investment_income_numeric) & !is.na(crimeData$percent_not_high_school_grad_numeric) & !is.na(crimeData$total_percent_divorced_numeric)]
+  length(nonaall_divorce)
+  
+  fit.percent_white<-lm(nonaall_crime ~ nonall_percent_white)
+  summary(fit.percent_white)
+  fit.investment<-lm(nonaall_crime ~ nonall_investment)
+  summary(fit.investment)
+  fit.high_school<-lm(nonaall_crime ~ nonall_not_high_school)
+  summary(fit.high_school)
+  fit.divorce<-lm(nonaall_crime ~ nonall_divorce)
+  summary(fit.divorce)
+  
+  hypothesis<-cbind(nonall_crime,
+                    nonall_percent_white,
+                    nonall_investment,
+                    nonall_not_high_school,
+                    nonall_divorce)
+  percentWhiteTest<-cor.test(nonall_crime,
+                           nonall_percent_white)
+  investmentTest<-cor.test(nonall_crime,
+                       nonall_investment)
+  highSchoolTest<-cor.test(nonall_crime,
+                           nonall_not_high_school)
+  divorceTest<-cor.test(nonall_crime,
+                        nonall_divorce)
+  crimeTest1<-cor.test(nonall_percent_white,
+                      nonall_investment)
+  crimeTest2<-cor.test(nonall_percent_white,
+                       nonall_not_high_school)
+  crimeTest3<-cor.test(nonall_percent_white,
+                       nonall_divorce)
+  crimeTest4<-cor.test(nonall_investment,
+                       nonall_not_high_school)
+  crimeTest5<-cor.test(nonall_investment,
+                       nonall_divorce)
+  crimeTest6<-cor.test(nonall_not_high_school,
+                    nonall_divorce)
+  round(cor(hypothesis),
+        4)
+  percentWhiteTest$p.value
+  investmentTest$p.value
+  highSchoolTest$p.value
+  divorceTest$p.value
+  crimeTest1$p.value
+  crimeTest2$p.value
+  crimeTest3$p.value
+  crimeTest4$p.value
+  crimeTest5$p.value
+  crimeTest6$p.value
+  
 }
 
 
@@ -257,322 +376,5 @@ inspect(sort(rules2V1L, by="support")[1:5])
 
 
 
-
-
-##Extra Data
-# 5/10 bins (number is off for some reason) for ViolentCrimesPerPop
-for(m in 1:2){
-  n.bins <- m*10
-  n.size<-length(crimeData$ViolentCrimesPerPop_numeric)
-  whichbin <- crimeData
-  #  print(whichbin)
-  
-  r.violentCrimes<-max(crimeData$ViolentCrimesPerPop_numeric) - min(crimeData$ViolentCrimesPerPop_numeric) + 1
-  binwidth<-r.violentCrimes/n.bins
-  print(binwidth)
-  for (i in 1:n.bins){
-    for(j in 1:n.size){
-      if((i-1)*binwidth < crimeData$ViolentCrimesPerPop_numeric[j] && crimeData$ViolentCrimesPerPop_numeric[j] <= (i)*binwidth)
-        whichbin$ViolentCrimesPerPop_numeric[j] <- i
-      if((i == 1) && (crimeData$ViolentCrimesPerPop_numeric[j] == 0)) {
-        whichbin$ViolentCrimesPerPop_numeric[j] <- i
-      }
-    }
-  }
-  print(whichbin$ViolentCrimesPerPop_numeric)
-  hist(whichbin$ViolentCrimesPerPop_numeric,
-       breaks = m*5,
-       xlim = c(1,m*5),
-       col = "lightblue",
-       ylab = "Count",
-       xlab = "Bin",
-       main = "Histogram of Binned Violent Crimes Per Population")
-  
-  set.seed(1234)
-  ind <- sample(2, n.size, replace=TRUE,
-                prob=c(0.7,0.3))
-  trainData <- whichbin[ind==1, ]
-  testData <- whichbin[ind==2,]
-  
-  crimeData_rpart <- rpart(ViolentCrimesPerPop_numeric ~ race_percent_white_numeric + percent_with_investment_income_numeric + percent_not_high_school_grad_numeric + total_percent_divorced_numeric, data = trainData, method = "class")
-  printcp(crimeData_rpart)
-  plotcp(crimeData_rpart)
-  plot(crimeData_rpart)
-  text(crimeData_rpart, use.n=TRUE)
-  crimeData_pred <- predict(crimeData_rpart, testData[,-6], type="class")
-  print(crimeData_pred)
-  print(table(crimeData_pred, testData$ViolentCrimesPerPop_numeric))
-}
-
-
-
-
-
-# Race
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$race_percent_black_numeric+
-        crimeData$race_percent_white_numeric+
-        crimeData$race_percent_asian_numeric+
-        crimeData$race_percent_hispanic_numeric)
-
-# Income
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$percent_with_wage_numeric+
-        crimeData$percent_with_farm_self_numeric+
-        crimeData$percent_with_investment_income_numeric+
-        crimeData$percent_with_social_security_numeric+
-        crimeData$percent_with_public_assistance_numeric+
-        crimeData$percent_with_retire_numeric)
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$percent_with_investment_income_numeric)
-
-# More Income and Race
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$median_family_income_numeric+
-        crimeData$per_capita_income_numeric+
-        crimeData$white_per_capita_numeric+
-        crimeData$black_per_capita_numeric+
-        crimeData$indian_per_capita_numeric+
-        crimeData$asian_per_capita_numeric+
-        crimeData$other_per_capita_numeric+
-        crimeData$hispanic_per_capitap_numeric)
-
-# Education Level and Occupation
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$percent_less_9th_grade_numeric+
-        crimeData$percent_not_high_school_grad_numeric+
-        crimeData$percent_bachelors_or_more_numeric+
-        crimeData$percent_unemployed_numeric+
-        crimeData$percent_employed_numeric+
-        crimeData$percent_employed_manufacturing_numeric+
-        crimeData$percent_employed_professional_service_numeric+
-        crimeData$percent_occupation_manufacturing_numeric+
-        crimeData$percent_occupation_management_professional_numeric)
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$percent_less_9th_grade_numeric)
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$percent_not_high_school_grad_numeric)
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$percent_unemployed_numeric)
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$percent_bachelors_or_more_numeric)
-
-# Divorce
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$male_percent_divorced_numeric+
-        crimeData$male_percent_never_married_numeric+
-        crimeData$female_percent_divorced_numeric+
-        crimeData$total_percent_divorced_numeric)
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$male_percent_divorced_numeric)
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$female_percent_divorced_numeric)
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$total_percent_divorced_numeric)
-
-# Family Makeup
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$person_per_family_numeric+
-        crimeData$percent_family_2_parents_numeric+
-        crimeData$percent_kids_2_parents_numeric+
-        crimeData$percent_young_kids_2_parents_numeric+
-        crimeData$percent_teen_2_parents_numeric+
-        crimeData$percent_working_mom_young_kids_numeric+
-        crimeData$percent_working_mom_numeric+
-        crimeData$num_illegitimate_numeric)
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$percent_family_2_parents_numeric)
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$percent_kids_2_parents_numeric)
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$percent_young_kids_2_parents_numeric)
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$percent_teen_2_parents_numeric)
-
-# Immigrant Information
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$percent_immigrants_recent_numeric+
-        crimeData$percent_immigrant_recent_5_numeric+
-        crimeData$percent_immigrant_recent_8_numeric+
-        crimeData$percent_immigrant_recent_10_numeric+
-        crimeData$percent_recent_immigrant_numeric+
-        crimeData$percent_recent_immigrant_5_numeric+
-        crimeData$percent_recent_immigrant_8_numeric+
-        crimeData$percent_recent_immigrant_10_numeric)
-
-# English/Non-English
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$percent_speak_english_only_numeric+
-        crimeData$percent_not_speak_english_well_numeric)
-
-# Household
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$percent_large_household_family+
-        crimeData$percent_large_household_occupied_numeric+
-        crimeData$persons_per_occupied_household_numeric+
-        crimeData$persons_per_owner_occupied_household_numeric+
-        crimeData$persons_per_rent_occupied_household_numeric+
-        crimeData$percent_person_owner_occupied_numeric+
-        crimeData$percent_persons_dense_household_numeric+
-        crimeData$percent_household_less_3_bedrooms_numeric+
-        crimeData$median_number_bedrooms_numeric)
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$percent_household_less_3_bedrooms_numeric)
-
-# Neighborhood Vacancies/Households
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$households_vacant_numeric+
-        crimeData$percent_households_occupied_numeric+
-        crimeData$percent_household_owner_occupied_numeric+
-        crimeData$percent_vacant_boarded_numeric+
-        crimeData$percent_vacant_more_6_months_numeric)
-
-# State of Housing
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$median_year_housing_built_numeric+
-        crimeData$percent_household_no_phone_numeric+
-        crimeData$percent_with_out_full_plumbing_numeric)
-
-# Quartile
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$owner_occupied_low_quartile_numeric+
-        crimeData$owner_occupied_median_value_numeric+
-        crimeData$owner_occupied_high_quartile_numeric+
-        crimeData$rent_low_quartile_numeric+
-        crimeData$rent_median_numeric+
-        crimeData$rent_high_quartile_numeric+
-        crimeData$median_rent_numeric)
-
-# More Cost Info
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$MedRentpercent_HousInc_numeric+
-        crimeData$MedOwnCostpercent_Inc_numeric+
-        crimeData$MedOwnCostpercent_IncNoMtg_numeric)
-
-# Homeless
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$NumInShelters_numeric+
-        crimeData$NumStreet_numeric)
-
-# Area People From
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$percent_ForeignBorn_numeric+
-        crimeData$percent_BornSameState_numeric+
-        crimeData$percent_SameHouse85_numeric+
-        crimeData$percent_SameCity85_numeric+
-        crimeData$percent_SameState85_numeric)
-
-# Lemas
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$LemasSwornFT_numeric+
-        crimeData$LemasSwFTPerPop_numeric+
-        crimeData$LemasSwFTFieldOps_numeric+
-        crimeData$LemasSwFTFieldPerPop_numeric+
-        crimeData$LemasTotalReq_numeric+
-        crimeData$LemasTotReqPerPop_numeric)
-
-# Police Makeup
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$PolicReqPerOffic_numeric+
-        crimeData$PolicPerPop_numeric+
-        crimeData$RacialMatchCommPol_numeric+
-        crimeData$percent_PolicWhite_numeric+
-        crimeData$percent_PolicBlack_numeric+
-        crimeData$percent_PolicHisp_numeric+
-        crimeData$percent_PolicAsian_numeric+
-        crimeData$percent_PolicMinor_numeric)
-
-# Police Jobs
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$OfficAssgnDrugUnits_numeric+
-        crimeData$NumKindsDrugsSeiz_numeric+
-        crimeData$PolicAveOTWorked_numeric)
-
-# Land/Density/Public Transit
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$LandArea_numeric+
-        crimeData$PopDens_numeric+
-        crimeData$percent_UsePubTrans_numeric)
-
-# More Police/Lemas
-pairs(~crimeData$ViolentCrimesPerPop_numeric+
-        crimeData$PolicCars_numeric+
-        crimeData$PolicOperBudg_numeric+
-        crimeData$Lemaspercent_PolicOnPatr_numeric+
-        crimeData$LemasGangUnitDeploy_numeric+
-        crimeData$Lemaspercent_OfficDrugUn_numeric+
-        crimeData$PolicBudgPerPop_numeric)
-
-
-
-hist(crimeData$ViolentCrimesPerPop_numeric,
-     breaks = 5,
-     xlim = c(0,1),
-     col = "lightblue",
-     ylab = "Count",
-     xlab = "Violent Crimes Per Population",
-     main = "Histogram of MPG")
-plot(crimeData$number_under_poverty_numeric,
-     crimeData$ViolentCrimesPerPop_numeric,
-     xlim = c(0.4,1),
-     ylim = c(0.4,1),
-     xlab = "Number Under Poverty",
-     ylab = "Violent Crimes Per Population",
-     main = "Scatterplot of VCPP by NUP",
-     type = "p",
-     pch = 16,
-     col = "green")
-points(crimeData$number_under_poverty_numeric,
-       crimeData$ViolentCrimesPerPop_numeric,
-       type = "p",
-       col = "black")
-
-plot(crimeData$female_percent_divorced_numeric,
-     crimeData$ViolentCrimesPerPop_numeric,
-     xlim = c(0,1),
-     ylim = c(0.4,1),
-     xlab = "Female Percent Divorced",
-     ylab = "Violent Crimes Per Population",
-     main = "Scatterplot of VCPP by FPD",
-     type = "p",
-     pch = 16,
-     col = "green")
-
-plot(crimeData$percent_BornSameState_numeric,
-     crimeData$ViolentCrimesPerPop_numeric,
-     xlim = c(0,1),
-     ylim = c(0.4,1),
-     xlab = "Percent Born Same State",
-     ylab = "Violent Crimes Per Population",
-     main = "Scatterplot of VCPP by PBSS",
-     type = "p",
-     pch = 16,
-     col = "green")
-
-plot(crimeData$male_percent_divorced_numeric,
-     crimeData$ViolentCrimesPerPop_numeric,
-     xlim = c(0,1),
-     ylim = c(0.4,1),
-     xlab = "Male Percent Divorce",
-     ylab = "Violent Crimes Per Population",
-     main = "Scatterplot of VCPP by MPD",
-     type = "p",
-     pch = 16,
-     col = "green")
-
-plot(crimeData$percent_UsePubTrans_numeric,
-     crimeData$ViolentCrimesPerPop_numeric,
-     xlim = c(0,1),
-     ylim = c(0.4,1),
-     xlab = "Percent Use Public Transit",
-     ylab = "Violent Crimes Per Population",
-     main = "Scatterplot of VCPP by PUPT",
-     type = "p",
-     pch = 16,
-     col = "green")
-
-
-
-#crimeData[crimeData=="?"]<-"0"
 
 
