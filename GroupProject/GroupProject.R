@@ -76,8 +76,8 @@ binningFunct <- function(mNum, dataOrig, dataNew){
   }
   print(dataNew)
   hist(dataNew,
-       breaks = mNum*5,
-       xlim = c(1,mNum*5),
+       breaks = (n.bins+1),
+       xlim = c(0,(n.bins+1)),
        col = "lightblue",
        ylab = "Count",
        xlab = "Bin",
