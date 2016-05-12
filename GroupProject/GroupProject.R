@@ -241,16 +241,16 @@ for(m in 1:2) {
                     nonall_divorce)
   round(cor(hypothesis),
         4)
-  percentWhiteTest$p.value
-  investmentTest$p.value
-  highSchoolTest$p.value
-  divorceTest$p.value
-  crimeTest1$p.value
-  crimeTest2$p.value
-  crimeTest3$p.value
-  crimeTest4$p.value
-  crimeTest5$p.value
-  crimeTest6$p.value
+  print(percentWhiteTest$p.value)
+  print(investmentTest$p.value)
+  print(highSchoolTest$p.value)
+  print(divorceTest$p.value)
+  print(crimeTest1$p.value)
+  print(crimeTest2$p.value)
+  print(crimeTest3$p.value)
+  print(crimeTest4$p.value)
+  print(crimeTest5$p.value)
+  print(crimeTest6$p.value)
   
 }
 
